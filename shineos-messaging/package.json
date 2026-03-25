@@ -1,0 +1,17 @@
+{
+  "name": "shineos-bridge",
+  "version": "1.0.0",
+  "description": "ShineOS messaging bridge — connects OpenClaw to the ShineOS dashboard",
+  "type": "module",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^3.3.2",
+    "@anthropic-ai/sdk": "^0.30.0"
+  }
+}
