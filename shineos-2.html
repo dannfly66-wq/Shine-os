@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ShineOS — Mobile Detailing</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pink:#E84393;--pink2:#F472B6;--pink3:#FCE7F3;--pink4:#FDF2F8;--pink5:#831843;
+  --purple:#7C3AED;--purple2:#A78BFA;--purple3:#EDE9FE;--purple4:#F5F3FF;--purple5:#4C1D95;
+  --white:#FFFFFF;--off:#FEF8FF;--surf:#FFFFFF;--surf2:#FDF4FF;
+  --tx:#1a0a1f;--tx2:#5b3070;--tx3:#9f72b0;
+  --bdr:#ead5f5;--bdr2:#d4b0e8;
+  --green:#059669;--gbg:#D1FAE5;
+  --amber:#D97706;--abg:#FEF3C7;
+  --red:#DC2626;--rbg:#FEE2E2;
+  --blue:#2563EB;--bbg:#DBEAFE;
+  --r:10px;--rl:16px;--rxl:20px;
+  --shadow:0 2px 20px rgba(124,58,237,.07);
+  --shadow-lg:0 8px 40px rgba(232,67,147,.18);
+}
+body{font-family:'Quicksand',sans-serif;background:var(--off);color:var(--tx);display:flex;height:100vh;overflow:hidden;font-size:14px}
+
+/* ── SIDEBAR ── */
+.sb{width:230px;min-width:230px;background:linear-gradient(160deg,#7C3AED 0%,#B845A0 55%,#E84393 100%);display:flex;flex-direction:column;position:relative;z-index:10}
+.sb::after{content:'';position:absolute;top:0;right:0;width:1px;height:100%;background:rgba(255,255,255,.15)}
+.sb-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,.15)}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo-ico{width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.logo-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;color:#fff;letter-spacing:-.3px}
+.logo-tag{font-size:10px;color:rgba(255,255,255,.6);letter-spacing:.8px;text-transform:uppercase;margin-top:1px}
+.sb-nav{padding:14px 12px;flex:1;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.nav-sec{font-size:9px;color:rgba(255,255,255,.45);letter-spacing:1.4px;text-transform:uppercase;padding:8px 8px 4px;margin-top:6px}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;cursor:pointer;color:rgba(255,255,255,.7);font-size:13px;font-weight:400;transition:all .15s;position:relative;user-select:none}
+.ni:hover{background:rgba(255,255,255,.15);color:#fff}
+.ni.on{background:#fff;color:var(--purple)}
+.ni.on svg{fill:var(--purple)}
+.ni svg{width:16px;height:16px;fill:rgba(255,255,255,.7);flex-shrink:0;transition:fill .15s}
+.ni.on .ni-label{font-weight:600}
+.nb{margin-left:auto;background:rgba(255,255,255,.25);color:#fff;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;line-height:1.7}
+.ni.on .nb{background:var(--purple3);color:var(--purple)}
+.sb-foot{padding:14px 12px;border-top:1px solid rgba(255,255,255,.15)}
+.u-card{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.12)}
+.u-av{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:700;font-size:12px;color:var(--pink);flex-shrink:0}
+.u-name{font-size:12px;color:#fff;font-weight:500}
+.u-role{font-size:10px;color:rgba(255,255,255,.55)}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--surf);border-bottom:2px solid transparent;border-image:linear-gradient(90deg,#7C3AED,var(--pinkpurple2),var(--pink)) 1;padding:0 26px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.pg-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pg-sub{font-size:11px;color:var(--tx3);margin-top:1px}
+.tb-right{display:flex;align-items:center;gap:10px}
+.btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--bdr2);background:transparent;color:var(--tx);font-family:'Quicksand',sans-serif;transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--surf2)}
+.btn.pri{background:linear-gradient(135deg,var(--purple) 0%,var(--pink) 100%);color:#fff;border:none}
+.btn.pri:hover{background:linear-gradient(135deg,var(--purple5) 0%,var(--pink5) 100%);opacity:.92}
+.btn.sml{font-size:11px;padding:5px 11px}
+.btn.ghost{background:transparent;border-color:var(--purple);color:var(--purple)}
+.btn.ghost:hover{background:var(--purple3)}
+
+.content{flex:1;overflow-y:auto;padding:24px 26px}
+.page{display:none}.page.on{display:block}
+
+/* ── CARDS ── */
+.card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:20px;box-shadow:var(--shadow)}
+.card-sm{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:14px}
+.ct{font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;color:var(--tx)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.mt{margin-top:14px}.mt2{margin-top:20px}
+
+/* ── METRICS ── */
+.mc{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.mc::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:var(--purple3);border-radius:50%}
+.mc-ico{font-size:20px;margin-bottom:8px;position:relative}
+.mc-lbl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;position:relative}
+.mc-val{font-family:'Nunito',sans-serif;font-weight:700;font-size:24px;color:var(--tx);position:relative}
+.mc-sub{font-size:11px;color:var(--tx3);margin-top:3px;position:relative}
+.mc.pink-bg{background:linear-gradient(135deg,var(--purple) 0%,var(--pink) 100%);border-color:var(--purple)}
+.mc.pink-bg::before{background:rgba(255,255,255,.1)}
+.mc.pink-bg .mc-lbl,.mc.pink-bg .mc-sub{color:rgba(255,255,255,.7)}
+.mc.pink-bg .mc-val{color:#fff}
+.up{color:var(--green)}.dn{color:var(--red)}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;gap:3px;white-space:nowrap}
+.bg{background:var(--gbg);color:var(--green)}
+.br{background:var(--rbg);color:var(--red)}
+.ba{background:var(--abg);color:var(--amber)}
+.bb{background:var(--bbg);color:var(--blue)}
+.bp{background:var(--pink3);color:var(--pink)}
+.bgr{background:#F3F4F6;color:#374151}
+.bpu{background:var(--purple3);color:var(--purple)}
+.bpu{background:var(--purple3);color:var(--purple5)}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* ── BOOKING CARDS ── */
+.booking-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;transition:all .15s;cursor:pointer}
+.booking-card:hover{border-color:var(--purple2);box-shadow:0 4px 20px rgba(124,58,237,.1)}
+.bk-time{min-width:52px;text-align:center}
+.bk-time-val{font-family:'Nunito',sans-serif;font-weight:700;font-size:16px;background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.bk-time-ampm{font-size:10px;color:var(--tx3)}
+.bk-line{width:3px;height:40px;background:linear-gradient(to bottom,var(--purple2),var(--pink2));border-radius:2px;flex-shrink:0}
+.bk-info{flex:1}
+.bk-name{font-weight:600;font-size:13px;margin-bottom:2px}
+.bk-meta{font-size:11px;color:var(--tx3);display:flex;gap:10px;flex-wrap:wrap}
+.bk-price{font-family:'Nunito',sans-serif;font-weight:700;font-size:15px;background:linear-gradient(120deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-left:auto;white-space:nowrap}
+.bk-actions{display:flex;gap:6px}
+
+/* ── CALENDAR ── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px}
+.cal-day-hdr{text-align:center;font-size:10px;color:var(--tx3);font-weight:500;text-transform:uppercase;letter-spacing:.5px;padding:4px 0}
+.cal-day{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .15s;position:relative}
+.cal-day:hover{background:var(--pink3)}
+.cal-day.today{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;font-weight:700}
+.cal-day.has-booking::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--purple2)}
+.cal-day.today.has-booking::after{background:#fff}
+.cal-day.other-month{color:var(--tx3);opacity:.4}
+.cal-day.selected{background:var(--pink3);border:2px solid var(--pink)}
+
+/* ── CUSTOMER TABLE ── */
+.ctbl{width:100%;border-collapse:collapse;font-size:12px}
+.ctbl th{text-align:left;font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.6px;padding:9px 12px;border-bottom:1px solid var(--bdr);background:var(--surf2)}
+.ctbl td{padding:12px 12px;border-bottom:1px solid var(--bdr);vertical-align:middle}
+.ctbl tr:last-child td{border-bottom:none}
+.ctbl tr:hover td{background:var(--purple4)}
+.cav{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple3),var(--pink3));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--purple);flex-shrink:0;font-family:'Nunito',sans-serif}
+.c-name-cell{display:flex;align-items:center;gap:9px}
+
+/* ── INVOICE CARD ── */
+.inv-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:all .15s}
+.inv-card:hover{border-color:var(--purple2);box-shadow:0 4px 20px rgba(124,58,237,.1)}
+.inv-num{font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.inv-client{font-size:13px;font-weight:500;margin-top:2px}
+.inv-date{font-size:11px;color:var(--tx3);margin-top:2px}
+.inv-amount{font-family:'Nunito',sans-serif;font-weight:700;font-size:18px;color:var(--tx)}
+
+/* ── SERVICES ── */
+.svc-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;transition:all .15s}
+.svc-card:hover{border-color:var(--purple);box-shadow:0 4px 24px rgba(124,58,237,.12)}
+.svc-name{font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;margin-bottom:4px}
+.svc-price{font-family:'Nunito',sans-serif;font-weight:700;font-size:20px;background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:6px 0}
+.svc-time{font-size:11px;color:var(--tx3)}
+.svc-desc{font-size:12px;color:var(--tx2);margin-top:6px;line-height:1.5}
+
+/* ── ROUTE ── */
+.route-stop{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--bdr);position:relative}
+.route-stop:last-child{border-bottom:none}
+.stop-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;font-family:'Nunito',sans-serif}
+.stop-connector{position:absolute;left:14px;top:40px;width:1px;height:calc(100% - 28px);background:var(--pink3)}
+.route-stop:last-child .stop-connector{display:none}
+.stop-info{flex:1}
+.stop-name{font-weight:600;font-size:13px}
+.stop-addr{font-size:11px;color:var(--tx3);margin-top:2px}
+.stop-svc{font-size:11px;color:var(--purple);margin-top:3px;font-weight:500}
+.stop-meta{font-size:11px;color:var(--tx2);margin-top:4px;display:flex;gap:10px}
+.stop-price{font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--tx)}
+
+/* ── MODAL ── */
+.modal-ov{position:fixed;inset:0;background:rgba(131,24,67,.25);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-ov.open{display:flex}
+.modal{background:var(--surf);border-radius:var(--rxl);width:100%;max-width:520px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 80px rgba(232,67,147,.2)}
+.modal-head{padding:20px 22px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surf);z-index:1;border-radius:var(--rxl) var(--rxl) 0 0}
+.modal-title{font-family:'Nunito',sans-serif;font-weight:700;font-size:16px}
+.modal-body{padding:22px}
+.modal-foot{padding:16px 22px;border-top:1px solid var(--bdr);display:flex;gap:10px;justify-content:flex-end}
+.close-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--bdr2);background:transparent;cursor:pointer;font-size:16px;color:var(--tx3)}
+.close-btn:hover{background:var(--pink3);color:var(--pink)}
+.form-row{margin-bottom:14px}
+.form-lbl{font-size:11px;font-weight:500;color:var(--tx2);margin-bottom:5px;display:block}
+.fi{width:100%;padding:10px 13px;border:1.5px solid var(--bdr2);border-radius:9px;font-family:'Quicksand',sans-serif;font-size:13px;color:var(--tx);background:var(--surf);outline:none;transition:border-color .15s}
+.fi:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.fi-sel{width:100%;padding:10px 13px;border:1.5px solid var(--bdr2);border-radius:9px;font-family:'Quicksand',sans-serif;font-size:13px;color:var(--tx);background:var(--surf);outline:none;cursor:pointer}
+.fi-sel:focus{border-color:var(--purple)}
+.g2-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.divider{height:1px;background:var(--bdr);margin:14px 0}
+
+/* ── CHART ── */
+.ch-wrap{position:relative;height:200px}
+
+/* ── ACTIVITY ── */
+.af{display:flex;flex-direction:column}
+.ai-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.ai-item:last-child{border-bottom:none}
+.ai-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.ai-txt{font-size:12px;color:var(--tx);line-height:1.5}
+.ai-txt strong{font-weight:600}
+.ai-time{font-size:10px;color:var(--tx3);margin-top:1px}
+
+/* ── NOTIF ── */
+.notif{position:fixed;top:14px;right:14px;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;padding:11px 16px;border-radius:var(--r);font-size:12px;font-weight:500;z-index:999;transform:translateX(130%);transition:transform .25s;display:flex;align-items:center;gap:8px;max-width:300px;box-shadow:var(--shadow-lg)}
+.notif.show{transform:translateX(0)}
+.n-dot{width:7px;height:7px;border-radius:50%;background:#fff;flex-shrink:0}
+
+/* ── AI ASSISTANT ── */
+.ai-fab{position:fixed;bottom:24px;right:22px;width:52px;height:52px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:50%;border:3px solid #fff;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:300;box-shadow:var(--shadow-lg);transition:transform .2s}
+.ai-fab:hover{transform:scale(1.1)}
+.ai-fab svg{width:22px;height:22px;fill:#fff}
+.ai-pulse{position:absolute;top:-2px;right:-2px;width:14px;height:14px;background:var(--green);border-radius:50%;border:2px solid #fff}
+.ai-pulse.busy{background:var(--amber);animation:ai-ring .9s ease-out infinite}
+@keyframes ai-ring{0%{transform:scale(1);opacity:1}100%{transform:scale(2.2);opacity:0}}
+
+.ai-panel{position:fixed;bottom:0;right:0;width:360px;max-width:100vw;height:580px;max-height:88vh;background:var(--surf);border-left:1px solid var(--bdr);border-top:1px solid var(--bdr);border-top-left-radius:20px;z-index:400;display:flex;flex-direction:column;transform:translateY(105%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:-4px 0 40px rgba(232,67,147,.12)}
+.ai-panel.open{transform:translateY(0)}
+.ai-head{padding:14px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;flex-shrink:0;background:linear-gradient(135deg,var(--purple5),var(--purple),var(--pink));border-top-left-radius:20px}
+.ai-av{width:32px;height:32px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ai-head-name{font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;color:#fff}
+.ai-head-status{font-size:10px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:4px;margin-top:1px}
+.ai-head-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;flex-shrink:0}
+.ai-head-dot.busy{background:#fcd34d;animation:ai-ring .9s ease-out infinite}
+.ai-close{margin-left:auto;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:16px;cursor:pointer;width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.ai-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.ai-msg{display:flex;gap:8px;animation:msg-in .2s ease-out}
+@keyframes msg-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.ai-msg.user{flex-direction:row-reverse}
+.ai-bubble{max-width:84%;padding:10px 13px;border-radius:12px;font-size:12px;line-height:1.6}
+.ai-msg.bot .ai-bubble{background:var(--surf2);border:1px solid var(--bdr);border-bottom-left-radius:3px;color:var(--tx)}
+.ai-msg.user .ai-bubble{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;border-bottom-right-radius:3px}
+.ai-msg-av{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:2px}
+.ai-msg.bot .ai-msg-av{background:var(--pink3);color:var(--pink)}
+.ai-msg.user .ai-msg-av{background:var(--pink3);color:var(--pink)}
+.ai-typing{display:flex;gap:4px;align-items:center;padding:10px 13px;background:var(--surf2);border:1px solid var(--bdr);border-radius:12px;border-bottom-left-radius:3px;width:56px}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--purple2);animation:bounce .9s infinite}
+.ai-dot:nth-child(2){animation-delay:.18s}
+.ai-dot:nth-child(3){animation-delay:.36s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.ai-chips-row{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;border-top:1px solid var(--bdr);flex-shrink:0;scrollbar-width:none}
+.ai-chips-row::-webkit-scrollbar{display:none}
+.ai-chip{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--bdr2);background:var(--surf2);color:var(--tx2);cursor:pointer;white-space:nowrap;transition:all .12s;flex-shrink:0}
+.ai-chip:hover{border-color:var(--purple);color:var(--purple);background:var(--purple3)}
+.ai-input-row{padding:10px 12px;border-top:1px solid var(--bdr);display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+.ai-inp{flex:1;padding:9px 13px;border:1.5px solid var(--bdr2);border-radius:20px;font-family:'Quicksand',sans-serif;font-size:13px;color:var(--tx);background:var(--surf);outline:none;resize:none;max-height:100px;min-height:38px;line-height:1.5;transition:border-color .15s}
+.ai-inp:focus{border-color:var(--purple)}
+.ai-send-btn{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.ai-send-btn:hover{background:var(--pink5)}
+.ai-send-btn svg{width:14px;height:14px;fill:#fff}
+.ai-send-btn:disabled{opacity:.4;cursor:not-allowed}
+.ai-action-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--bdr2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:'Quicksand',sans-serif;transition:all .12s;margin-top:6px;margin-right:5px}
+.ai-action-btn:hover{background:var(--pink3);border-color:var(--pink);color:var(--pink)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:900px){.g4{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}.sb{display:none}}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--pink3);border-radius:10px}
+
+/* ═══════════ BUBBLES ═══════════ */
+.bubble-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bubble{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 35%,rgba(255,255,255,.5),rgba(167,139,250,.15));border:1.5px solid rgba(167,139,250,.2);animation:float-up linear infinite}
+@keyframes float-up{
+  0%  {transform:translateY(0) scale(1);   opacity:0}
+  10% {opacity:1}
+  90% {opacity:.6}
+  100%{transform:translateY(-110vh) scale(1.15); opacity:0}
+}
+.bubble-deco{position:absolute;border-radius:50%;pointer-events:none}
+
+/* Sidebar bubbles */
+.sb{overflow:hidden;position:relative}
+.sb-bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+
+/* Card bubble accents */
+.card{position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;bottom:-30px;right:-30px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.05),transparent 70%);pointer-events:none}
+.mc::before{background:radial-gradient(circle,rgba(232,67,147,.12),transparent 70%);border-radius:50%}
+.mc.pink-bg::before{background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%)}
+
+/* Booking card bubble dot */
+.bk-line{border-radius:20px;position:relative}
+.bk-line::before{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:var(--purple)}
+.bk-line::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:var(--pink2)}
+
+/* Bubble pill for stats */
+.bubble-stat{display:inline-flex;align-items:center;gap:6px;background:var(--pink3);border-radius:30px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--pink5)}
+
+/* Bubble logo icon */
+.logo-ico{border-radius:50% !important;box-shadow:0 4px 14px rgba(255,255,255,.3)}
+
+/* Rounder everything */
+:root{--r:14px;--rl:20px;--rxl:26px}
+.btn{border-radius:30px !important}
+.badge{border-radius:30px !important}
+.fi,.fi-sel{border-radius:14px !important}
+.ni{border-radius:14px !important}
+.cav{width:32px;height:32px}
+.booking-card{border-radius:18px !important}
+.inv-card{border-radius:18px !important}
+.svc-card{border-radius:18px !important}
+.modal{border-radius:28px !important}
+.ai-panel{border-top-left-radius:28px !important}
+.ai-head{border-top-left-radius:28px !important}
+.ai-bubble{border-radius:18px !important}
+.ai-msg.bot .ai-bubble{border-bottom-left-radius:4px !important}
+.ai-msg.user .ai-bubble{border-bottom-right-radius:4px !important}
+.ai-fab{border-radius:50%}
+.u-card{border-radius:18px !important}
+.topbar{border-bottom:1px solid var(--bdr)}
+.notif{border-radius:20px !important}
+
+
+/* ─── MESSAGES ─── */
+.msg-thread{display:flex;flex-direction:column;gap:0;height:calc(100vh - 180px);overflow:hidden}
+.msg-layout{display:grid;grid-template-columns:300px 1fr;gap:0;height:100%;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);overflow:hidden}
+.msg-sidebar{border-right:1px solid var(--bdr);overflow-y:auto;display:flex;flex-direction:column}
+.msg-sidebar-head{padding:14px 16px;border-bottom:1px solid var(--bdr);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.msg-conv{padding:12px 16px;border-bottom:1px solid var(--bdr);cursor:pointer;transition:background .12s;display:flex;align-items:center;gap:10px}
+.msg-conv:hover{background:var(--pink4)}
+.msg-conv.active{background:var(--pink3)}
+.msg-conv-av{width:36px;height:36px;border-radius:50%;background:var(--pink3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--pink);flex-shrink:0;font-family:'Nunito',sans-serif}
+.msg-conv-name{font-weight:600;font-size:13px}
+.msg-conv-preview{font-size:11px;color:var(--tx3);margin-top:1px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:170px}
+.msg-conv-meta{margin-left:auto;text-align:right;flex-shrink:0}
+.msg-conv-time{font-size:10px;color:var(--tx3)}
+.msg-conv-unread{width:7px;height:7px;background:var(--pink);border-radius:50%;margin:3px 0 0 auto}
+.msg-platform{font-size:9px;padding:1px 5px;border-radius:8px;font-weight:600;margin-top:2px;display:inline-block}
+.msg-platform.whatsapp{background:#dcfce7;color:#16a34a}
+.msg-platform.imessage{background:#dbeafe;color:#2563eb}
+.msg-platform.telegram{background:#e0f2fe;color:#0369a1}
+
+.msg-main{display:flex;flex-direction:column;overflow:hidden}
+.msg-main-head{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.msg-main-av{width:36px;height:36px;border-radius:50%;background:var(--pink3);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--pink);font-family:'Nunito',sans-serif}
+.msg-main-name{font-weight:700;font-size:14px;font-family:'Nunito',sans-serif}
+.msg-main-sub{font-size:11px;color:var(--tx3);margin-top:1px}
+.msg-body{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:10px;background:var(--off)}
+.msg-bubble-row{display:flex;align-items:flex-end;gap:8px}
+.msg-bubble-row.out{flex-direction:row-reverse}
+.msg-bav{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Nunito',sans-serif}
+.msg-bubble{max-width:75%;padding:10px 14px;border-radius:18px;font-size:13px;line-height:1.5}
+.msg-bubble-row.in .msg-bubble{background:var(--surf);border:1px solid var(--bdr);border-bottom-left-radius:4px;color:var(--tx)}
+.msg-bubble-row.out .msg-bubble{background:var(--pink);color:#fff;border-bottom-right-radius:4px}
+.msg-bubble-time{font-size:10px;color:var(--tx3);margin-top:3px;text-align:right}
+.msg-bubble-row.in .msg-bubble-time{text-align:left}
+
+.msg-input-row{padding:12px 16px;border-top:1px solid var(--bdr);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;background:var(--surf)}
+.msg-inp{flex:1;padding:10px 14px;border:1.5px solid var(--bdr2);border-radius:22px;font-family:'Quicksand',sans-serif;font-size:13px;color:var(--tx);background:var(--surf);outline:none;resize:none;max-height:90px;min-height:40px;line-height:1.5;transition:border-color .15s}
+.msg-inp:focus{border-color:var(--pink)}
+.msg-send{width:38px;height:38px;border-radius:50%;background:var(--pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.msg-send:hover{background:var(--pink5)}
+.msg-send svg{width:14px;height:14px;fill:#fff}
+
+.msg-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--tx3);text-align:center;gap:10px}
+.msg-empty-ico{font-size:40px;opacity:.4}
+.booking-alert{background:var(--pink3);border:1.5px solid var(--pink2);border-radius:14px;padding:14px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px}
+.booking-alert-ico{font-size:18px;flex-shrink:0}
+.booking-alert-body{flex:1}
+.booking-alert-title{font-weight:700;font-size:13px;color:var(--pink5);margin-bottom:3px;font-family:'Nunito',sans-serif}
+.booking-alert-meta{font-size:12px;color:var(--tx2)}
+.bridge-status{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--surf2);border-radius:10px;font-size:11px;color:var(--tx3);margin-bottom:14px}
+.bridge-dot{width:8px;height:8px;border-radius:50%;background:#d1d5db;flex-shrink:0}
+.bridge-dot.live{background:var(--green)}
+.bridge-dot.checking{background:var(--amber);animation:pulse-dot .8s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+
+
+/* ═══════════ LOGIN SCREEN ═══════════ */
+#login-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(145deg,#FDF2F8 0%,#FCE7F3 40%,#FDF4FF 100%);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;overflow:hidden;
+}
+.login-bubbles{position:absolute;inset:0;pointer-events:none}
+.login-bubble{position:absolute;border-radius:50%;
+  background:radial-gradient(circle at 30% 35%,rgba(255,255,255,.7),rgba(232,67,147,.1));
+  border:1.5px solid rgba(232,67,147,.18);
+  animation:lb-float linear infinite}
+@keyframes lb-float{
+  0%  {transform:translateY(0) scale(1);opacity:0}
+  8%  {opacity:1}
+  92% {opacity:.7}
+  100%{transform:translateY(-110vh) scale(1.12);opacity:0}
+}
+.login-card{
+  width:100%;max-width:400px;
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(20px);
+  border:1.5px solid rgba(232,67,147,.2);
+  border-radius:28px;
+  padding:36px 32px;
+  box-shadow:0 20px 80px rgba(232,67,147,.18),0 2px 20px rgba(232,67,147,.08);
+  position:relative;z-index:1;
+  animation:card-in .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes card-in{
+  from{opacity:0;transform:translateY(24px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.login-logo-wrap{text-align:center;margin-bottom:28px}
+.login-logo-ico{
+  width:68px;height:68px;
+  background:linear-gradient(135deg,var(--pink) 0%,var(--pink2) 100%);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;margin:0 auto 14px;
+  box-shadow:0 8px 30px rgba(232,67,147,.35);
+  animation:logo-pulse 3s ease-in-out infinite;
+}
+@keyframes logo-pulse{
+  0%,100%{box-shadow:0 8px 30px rgba(232,67,147,.35)}
+  50%{box-shadow:0 8px 48px rgba(232,67,147,.55)}
+}
+.login-brand{font-family:'Nunito',sans-serif;font-weight:900;font-size:26px;
+  background:linear-gradient(135deg,var(--pink5),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:-.5px}
+.login-tagline{font-size:12px;color:var(--tx3);margin-top:3px;letter-spacing:.3px}
+.login-label{font-size:11px;font-weight:700;color:var(--tx2);letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:8px;display:block}
+.login-input{
+  width:100%;padding:14px 18px;
+  border:2px solid var(--bdr2);border-radius:16px;
+  font-family:'Nunito',sans-serif;font-size:20px;
+  letter-spacing:6px;text-align:center;color:var(--tx);
+  background:rgba(255,255,255,.8);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+  margin-bottom:8px;
+}
+.login-input:focus{
+  border-color:var(--pink);
+  box-shadow:0 0 0 4px rgba(232,67,147,.12);
+}
+.login-input::placeholder{letter-spacing:2px;font-size:16px;color:var(--tx3)}
+.login-error{
+  font-size:12px;color:var(--red);text-align:center;
+  min-height:18px;margin-bottom:10px;font-weight:600;
+  animation:shake .3s ease-in-out;
+}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.login-btn{
+  width:100%;padding:14px;border:none;border-radius:16px;
+  background:linear-gradient(135deg,var(--pink5) 0%,var(--pink) 60%,var(--pink2) 100%);
+  color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;
+  cursor:pointer;letter-spacing:.3px;
+  box-shadow:0 6px 24px rgba(232,67,147,.4);
+  transition:all .2s;
+}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(232,67,147,.5)}
+.login-btn:active{transform:translateY(0)}
+.login-hint{text-align:center;margin-top:16px;font-size:11px;color:var(--tx3)}
+.login-hint span{color:var(--pink);font-weight:700;font-family:'Nunito',sans-serif}
+.login-dots{display:flex;justify-content:center;gap:8px;margin:16px 0 0}
+.login-dot-ind{width:10px;height:10px;border-radius:50%;background:var(--pink3);border:2px solid var(--pink2);transition:all .15s}
+.login-dot-ind.filled{background:var(--pink);border-color:var(--pink);transform:scale(1.15)}
+
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div id="login-screen">
+  <!-- floating bubbles -->
+  <div class="login-bubbles" id="login-bubbles"></div>
+
+  <div class="login-card">
+    <div class="login-logo-wrap">
+      <div class="login-logo-ico">✨</div>
+      <div class="login-brand">ShineOS</div>
+      <div class="login-tagline">Mobile Detailing · We come to you</div>
+    </div>
+
+    <label class="login-label">Access Code</label>
+    <input
+      class="login-input"
+      id="login-input"
+      type="password"
+      maxlength="20"
+      placeholder="••••••"
+      autocomplete="current-password"
+      oninput="loginUpdateDots(this.value)"
+      onkeydown="if(event.key==='Enter')loginSubmit()"
+    >
+
+    <!-- visual dot indicators -->
+    <div class="login-dots" id="login-dots">
+      <div class="login-dot-ind" id="ld0"></div>
+      <div class="login-dot-ind" id="ld1"></div>
+      <div class="login-dot-ind" id="ld2"></div>
+      <div class="login-dot-ind" id="ld3"></div>
+      <div class="login-dot-ind" id="ld4"></div>
+      <div class="login-dot-ind" id="ld5"></div>
+    </div>
+
+    <div class="login-error" id="login-error"></div>
+
+    <button class="login-btn" onclick="loginSubmit()">
+      Enter ShineOS →
+    </button>
+
+    <div class="login-hint">Default code: <span>shine2026</span></div>
+  </div>
+</div>
+
+<!-- FLOATING BUBBLE BACKGROUND -->
+<div class="bubble-bg" id="bubble-bg"></div>
+
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-bubble" style="width:120px;height:120px;top:-40px;right:-40px;opacity:.5"></div>
+  <div class="sb-bubble" style="width:70px;height:70px;bottom:100px;left:-20px;opacity:.3"></div>
+  <div class="sb-bubble" style="width:50px;height:50px;bottom:200px;right:10px;opacity:.2"></div>
+  <div class="sb-logo">
+    <div class="logo-row">
+      <div class="logo-ico" style="background:linear-gradient(135deg,#fff,#EDE9FE)">✨</div>
+      <div><div class="logo-name">ShineOS</div><div class="logo-tag">Mobile Detailing</div></div>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="nav-sec">Overview</div>
+    <div class="ni" onclick="nav('messages')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg><span class="ni-label">Messages</span><span class="nb" id="nb-messages" style="display:none">0</span></div>
+    <div class="ni on" onclick="nav('overview')"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg><span class="ni-label">Dashboard</span></div>
+    <div class="ni" onclick="nav('bookings')"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg><span class="ni-label">Bookings</span><span class="nb" id="nb-bookings">3</span></div>
+    <div class="ni" onclick="nav('route')"><svg viewBox="0 0 24 24"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg><span class="ni-label">Today's Route</span></div>
+    <div class="nav-sec">Business</div>
+    <div class="ni" onclick="nav('customers')"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="ni-label">Customers</span></div>
+    <div class="ni" onclick="nav('invoices')"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span class="ni-label">Invoices</span></div>
+    <div class="ni" onclick="nav('financials')"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg><span class="ni-label">Financials</span></div>
+    <div class="ni" onclick="nav('services')"><svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98 0-.34-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98 0 .33.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg><span class="ni-label">Services</span></div>
+  </nav>
+  <div class="sb-foot">
+    <div class="u-card">
+      <div class="u-av">G</div>
+      <div><div class="u-name">You & George</div><div class="u-role">ShineOS · 2 techs</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div><div class="pg-title" id="pg-title">Dashboard</div><div class="pg-sub" id="pg-sub">Welcome back — here's your day at a glance</div></div>
+    <div class="tb-right">
+      <button class="btn ghost sml" onclick="openModal('new-booking-modal')">+ New Booking</button>
+      <button class="btn pri sml" onclick="openModal('quick-invoice-modal')">💰 Invoice</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page on" id="page-overview">
+      <div class="g4">
+        <div class="mc pink-bg"><div class="mc-ico">💰</div><div class="mc-lbl">Revenue Today</div><div class="mc-val" id="ov-today-rev">$0</div><div class="mc-sub">0 jobs completed</div></div>
+        <div class="mc"><div class="mc-ico">📅</div><div class="mc-lbl">Bookings This Week</div><div class="mc-val" id="ov-week-bookings">8</div><div class="mc-sub"><span class="up">↑ 3</span> from last week</div></div>
+        <div class="mc"><div class="mc-ico">👥</div><div class="mc-lbl">Total Customers</div><div class="mc-val" id="ov-customers">12</div><div class="mc-sub">4 regulars</div></div>
+        <div class="mc"><div class="mc-ico">⭐</div><div class="mc-lbl">Month Revenue</div><div class="mc-val up" id="ov-month-rev">$3,240</div><div class="mc-sub">Goal: $5,000</div></div>
+      </div>
+
+      <div class="g2 mt2">
+        <div class="card">
+          <div class="ct">Today's Schedule <button class="btn sml" onclick="nav('bookings')">View all →</button></div>
+          <div id="ov-schedule"></div>
+        </div>
+        <div class="card">
+          <div class="ct">Recent Activity</div>
+          <div class="af" id="ov-activity"></div>
+        </div>
+      </div>
+
+      <div class="g2 mt2">
+        <div class="card">
+          <div class="ct">Revenue This Week</div>
+          <div class="ch-wrap"><canvas id="rev-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="ct">Top Services</div>
+          <div class="ch-wrap"><canvas id="svc-chart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- GOAL TRACKER -->
+      <div class="card mt2">
+        <div class="ct">Monthly Goal Tracker — April 2026</div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:12px;color:var(--tx2)">Revenue</span>
+              <span style="font-size:12px;font-family:'Nunito',sans-serif;font-weight:700">$3,240 / $5,000</span>
+            </div>
+            <div style="height:8px;background:var(--pink3);border-radius:4px;overflow:hidden"><div style="height:100%;width:64.8%;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:4px"></div></div>
+            <div style="font-size:10px;color:var(--tx3);margin-top:4px">64.8% of monthly goal — $1,760 to go</div>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:12px;color:var(--tx2)">Jobs</span>
+              <span style="font-size:12px;font-family:'Nunito',sans-serif;font-weight:700">22 / 40</span>
+            </div>
+            <div style="height:8px;background:var(--pink3);border-radius:4px;overflow:hidden"><div style="height:100%;width:55%;background:linear-gradient(90deg,var(--purple2),var(--pink2));border-radius:4px"></div></div>
+            <div style="font-size:10px;color:var(--tx3);margin-top:4px">55% — 18 jobs to hit target</div>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:12px;color:var(--tx2)">New customers</span>
+              <span style="font-size:12px;font-family:'Nunito',sans-serif;font-weight:700">7 / 15</span>
+            </div>
+            <div style="height:8px;background:var(--pink3);border-radius:4px;overflow:hidden"><div style="height:100%;width:46.7%;background:linear-gradient(90deg,var(--purple5),var(--pink5));border-radius:4px"></div></div>
+            <div style="font-size:10px;color:var(--tx3);margin-top:4px">46.7% — 8 new customers needed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div class="page" id="page-bookings">
+      <div class="g2">
+        <!-- Calendar -->
+        <div class="card">
+          <div class="ct">
+            <span id="cal-month-label">April 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn sml" onclick="prevMonth()">‹</button>
+              <button class="btn sml" onclick="nextMonth()">›</button>
+            </div>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <!-- Day bookings -->
+        <div class="card">
+          <div class="ct"><span id="day-label">Today's Bookings</span><button class="btn sml pri" onclick="openModal('new-booking-modal')">+ Add</button></div>
+          <div id="day-bookings"></div>
+        </div>
+      </div>
+      <div class="card mt2">
+        <div class="ct">All Upcoming Bookings <span id="booking-total-badge"></span></div>
+        <div id="all-bookings-list"></div>
+      </div>
+    </div>
+
+    <!-- ROUTE PLANNER -->
+    <div class="page" id="page-route">
+      <div class="g2">
+        <div class="card">
+          <div class="ct">Today's Route — <span style="color:var(--pink)" id="route-date"></span></div>
+          <div style="background:var(--pink3);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+            <span style="font-size:18px">🗺️</span>
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--pink5)" id="route-summary">3 stops · Est. $390 · ~6.5 hours</div>
+              <div style="font-size:11px;color:var(--tx3);margin-top:2px">Optimised for shortest drive time</div>
+            </div>
+            <button class="btn sml pri" style="margin-left:auto" onclick="openMaps()">Open Maps ↗</button>
+          </div>
+          <div id="route-stops"></div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:14px">
+            <div class="ct">Day Summary</div>
+            <div style="display:flex;flex-direction:column;gap:10px" id="route-summary-cards"></div>
+          </div>
+          <div class="card">
+            <div class="ct">Supply Checklist</div>
+            <div id="supply-checklist"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div class="page" id="page-customers">
+      <div class="card">
+        <div class="ct">Customer Records <button class="btn sml pri" onclick="openModal('new-customer-modal')">+ Add Customer</button></div>
+        <div style="margin-bottom:14px;display:flex;gap:8px">
+          <input class="fi" placeholder="🔍  Search customers…" id="cust-search" style="flex:1" oninput="filterCustomers()">
+          <select class="fi-sel" id="cust-filter" onchange="filterCustomers()" style="width:140px">
+            <option value="">All Types</option>
+            <option>Uber Driver</option>
+            <option>Nurse</option>
+            <option>Regular</option>
+            <option>New</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="ctbl">
+            <thead><tr><th>Customer</th><th>Type</th><th>Phone</th><th>Last Service</th><th>Total Spent</th><th>Status</th><th></th></tr></thead>
+            <tbody id="customers-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVOICES -->
+    <div class="page" id="page-invoices">
+      <div class="g3" style="margin-bottom:16px">
+        <div class="mc"><div class="mc-lbl">Outstanding</div><div class="mc-val" style="color:var(--amber)" id="inv-outstanding">$340</div><div class="mc-sub">2 unpaid</div></div>
+        <div class="mc pink-bg"><div class="mc-lbl">Paid This Month</div><div class="mc-val" id="inv-paid">$3,240</div><div class="mc-sub">22 invoices</div></div>
+        <div class="mc"><div class="mc-lbl">Avg Invoice</div><div class="mc-val" id="inv-avg">$147</div><div class="mc-sub">Per job</div></div>
+      </div>
+      <div class="card">
+        <div class="ct">All Invoices <button class="btn sml pri" onclick="openModal('quick-invoice-modal')">+ New Invoice</button></div>
+        <div id="invoices-list"></div>
+      </div>
+    </div>
+
+    <!-- FINANCIALS -->
+    <div class="page" id="page-financials">
+      <div class="g4" style="margin-bottom:16px">
+        <div class="mc"><div class="mc-lbl">Revenue (MTD)</div><div class="mc-val up">$3,240</div><div class="mc-sub">22 jobs</div></div>
+        <div class="mc"><div class="mc-lbl">Expenses (MTD)</div><div class="mc-val">$520</div><div class="mc-sub">Supplies + fuel</div></div>
+        <div class="mc pink-bg"><div class="mc-lbl">Net Profit (MTD)</div><div class="mc-val">$2,720</div><div class="mc-sub">83.9% margin</div></div>
+        <div class="mc"><div class="mc-lbl">Your Cut (50%)</div><div class="mc-val" style="color:var(--pink)">$1,360</div><div class="mc-sub">George: $1,360</div></div>
+      </div>
+      <div class="g2">
+        <div class="card"><div class="ct">Revenue vs Expenses — Last 6 Months</div><div class="ch-wrap"><canvas id="fin-chart"></canvas></div></div>
+        <div class="card">
+          <div class="ct">Expense Breakdown</div>
+          <div style="display:flex;flex-direction:column;gap:8px" id="expense-breakdown"></div>
+        </div>
+      </div>
+      <div class="card mt2">
+        <div class="ct">Per-Job Profitability</div>
+        <div style="overflow-x:auto">
+          <table class="ctbl">
+            <thead><tr><th>Service</th><th>Price</th><th>Supply Cost</th><th>Time</th><th>Hourly Rate</th><th>Margin</th></tr></thead>
+            <tbody id="profitability-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="page" id="page-services">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="font-size:12px;color:var(--tx3)">Your service menu — share this with customers</div>
+        <button class="btn pri sml" onclick="showNotif('📋 Service menu copied to clipboard!')">Copy Menu</button>
+      </div>
+      <div id="services-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px"></div>
+    </div>
+
+
+    <!-- MESSAGES PAGE -->
+    <div class="page" id="page-messages">
+
+      <!-- Bridge status + setup -->
+      <div class="bridge-status" id="bridge-status">
+        <div class="bridge-dot checking" id="bridge-dot"></div>
+        <span id="bridge-status-txt">Checking OpenClaw bridge connection…</span>
+        <button class="btn sml" style="margin-left:auto" onclick="openModal('openclaw-setup-modal')">⚙️ Setup</button>
+        <button class="btn sml" onclick="refreshMessages()">↺ Refresh</button>
+      </div>
+
+      <!-- Pending booking alerts -->
+      <div id="pending-bookings-bar"></div>
+
+      <!-- Main layout -->
+      <div class="msg-layout" id="msg-layout">
+        <!-- Conversation list -->
+        <div class="msg-sidebar">
+          <div class="msg-sidebar-head">
+            Conversations
+            <span class="badge bp" id="msg-unread-badge" style="display:none">0 new</span>
+          </div>
+          <div id="msg-conv-list">
+            <div style="padding:30px;text-align:center;color:var(--tx3);font-size:12px">
+              <div style="font-size:28px;margin-bottom:8px">💬</div>
+              Connect OpenClaw to see customer messages here
+            </div>
+          </div>
+        </div>
+
+        <!-- Message thread -->
+        <div class="msg-main" id="msg-main">
+          <div class="msg-empty">
+            <div class="msg-empty-ico">🌸</div>
+            <div style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--tx2)">Select a conversation</div>
+            <div style="font-size:12px">Customer messages appear here in real time</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- MODALS -->
+
+<!-- New Booking -->
+<div class="modal-ov" id="new-booking-modal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">✨ New Booking</div><button class="close-btn" onclick="closeModal('new-booking-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="g2-form">
+        <div class="form-row"><label class="form-lbl">Customer Name</label><input class="fi" id="nb-name" placeholder="Full name"></div>
+        <div class="form-row"><label class="form-lbl">Phone</label><input class="fi" id="nb-phone" placeholder="+1 (xxx) xxx-xxxx"></div>
+        <div class="form-row"><label class="form-lbl">Date</label><input class="fi" type="date" id="nb-date"></div>
+        <div class="form-row"><label class="form-lbl">Time</label><input class="fi" type="time" id="nb-time" value="09:00"></div>
+      </div>
+      <div class="form-row"><label class="form-lbl">Service</label>
+        <select class="fi-sel fi" id="nb-service">
+          <option>Full Interior + Exterior — $180</option>
+          <option>Full Interior Detail — $130</option>
+          <option>Exterior Wash + Dry — $90</option>
+          <option>Basic Interior Vacuum — $70</option>
+          <option>Uber/Lyft Driver Package — $110</option>
+          <option>Nurse Parking Lot Special — $140</option>
+          <option>Monthly Maintenance (2x) — $250</option>
+          <option>Odour Elimination Add-on — +$50</option>
+        </select>
+      </div>
+      <div class="form-row"><label class="form-lbl">Customer Type</label>
+        <select class="fi-sel fi" id="nb-type">
+          <option>Regular</option><option>Uber Driver</option><option>Nurse</option><option>New</option>
+        </select>
+      </div>
+      <div class="form-row"><label class="form-lbl">Address / Location</label><input class="fi" id="nb-address" placeholder="Street address or parking lot"></div>
+      <div class="form-row"><label class="form-lbl">Assigned Technician</label>
+        <select class="fi-sel fi" id="nb-tech">
+          <option>Both (You + George)</option><option>You</option><option>George</option>
+        </select>
+      </div>
+      <div class="form-row"><label class="form-lbl">Notes</label><input class="fi" id="nb-notes" placeholder="Car colour, special requests…"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('new-booking-modal')">Cancel</button>
+      <button class="btn pri" onclick="addBooking()">✨ Book It</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Customer -->
+<div class="modal-ov" id="new-customer-modal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">👤 New Customer</div><button class="close-btn" onclick="closeModal('new-customer-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="g2-form">
+        <div class="form-row"><label class="form-lbl">Full Name</label><input class="fi" id="nc-name" placeholder="Full name"></div>
+        <div class="form-row"><label class="form-lbl">Phone</label><input class="fi" id="nc-phone" placeholder="+1 (xxx) xxx-xxxx"></div>
+        <div class="form-row"><label class="form-lbl">Email</label><input class="fi" id="nc-email" placeholder="email@example.com"></div>
+        <div class="form-row"><label class="form-lbl">Type</label>
+          <select class="fi-sel fi" id="nc-type">
+            <option>Regular</option><option>Uber Driver</option><option>Nurse</option><option>New</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row"><label class="form-lbl">Vehicle (Year Make Model)</label><input class="fi" id="nc-vehicle" placeholder="e.g. 2021 Toyota Camry Silver"></div>
+      <div class="form-row"><label class="form-lbl">Preferred Service</label>
+        <select class="fi-sel fi" id="nc-pref-service">
+          <option>Full Interior + Exterior</option><option>Full Interior Detail</option>
+          <option>Uber/Lyft Driver Package</option><option>Nurse Parking Lot Special</option>
+          <option>Monthly Maintenance</option>
+        </select>
+      </div>
+      <div class="form-row"><label class="form-lbl">How they found you</label>
+        <select class="fi-sel fi" id="nc-source">
+          <option>Uber Driver Group</option><option>Instagram</option><option>TikTok</option>
+          <option>Referral</option><option>Hospital/Workplace</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-row"><label class="form-lbl">Notes</label><input class="fi" id="nc-notes" placeholder="Any preferences or details…"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('new-customer-modal')">Cancel</button>
+      <button class="btn pri" onclick="addCustomer()">Save Customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Invoice -->
+<div class="modal-ov" id="quick-invoice-modal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">💰 Create Invoice</div><button class="close-btn" onclick="closeModal('quick-invoice-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="g2-form">
+        <div class="form-row"><label class="form-lbl">Customer Name</label><input class="fi" id="qi-name" placeholder="Customer name"></div>
+        <div class="form-row"><label class="form-lbl">Date</label><input class="fi" type="date" id="qi-date"></div>
+      </div>
+      <div class="form-row"><label class="form-lbl">Service</label>
+        <select class="fi-sel fi" id="qi-service" onchange="updateInvoiceTotal()">
+          <option value="180">Full Interior + Exterior — $180</option>
+          <option value="130">Full Interior Detail — $130</option>
+          <option value="90">Exterior Wash + Dry — $90</option>
+          <option value="70">Basic Interior Vacuum — $70</option>
+          <option value="110">Uber/Lyft Driver Package — $110</option>
+          <option value="140">Nurse Parking Lot Special — $140</option>
+          <option value="250">Monthly Maintenance (2x) — $250</option>
+        </select>
+      </div>
+      <div class="g2-form">
+        <div class="form-row"><label class="form-lbl">Add-ons</label>
+          <select class="fi-sel fi" id="qi-addon" onchange="updateInvoiceTotal()">
+            <option value="0">None</option>
+            <option value="50">Odour Elimination (+$50)</option>
+            <option value="30">Tire Shine (+$30)</option>
+            <option value="60">Pet Hair Removal (+$60)</option>
+            <option value="100">Wax/Sealant (+$100)</option>
+          </select>
+        </div>
+        <div class="form-row"><label class="form-lbl">Tip</label><input class="fi" type="number" id="qi-tip" placeholder="0" oninput="updateInvoiceTotal()"></div>
+      </div>
+      <div style="background:linear-gradient(135deg,var(--purple4),var(--pink4));border:1px solid var(--purple3);border-radius:var(--r);padding:14px;margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;font-weight:600;color:var(--pink5)">Total</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:700;font-size:22px;color:var(--pink)" id="qi-total">$180</span>
+      </div>
+      <div class="form-row" style="margin-top:12px"><label class="form-lbl">Payment Method</label>
+        <select class="fi-sel fi" id="qi-payment">
+          <option>Cash</option><option>E-transfer</option><option>Credit Card (Square)</option><option>Debit</option>
+        </select>
+      </div>
+      <div class="form-row"><label class="form-lbl">Status</label>
+        <select class="fi-sel fi" id="qi-status">
+          <option>Paid</option><option>Pending</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('quick-invoice-modal')">Cancel</button>
+      <button class="btn ghost" onclick="sendInvoiceWA()">📲 Send via WhatsApp</button>
+      <button class="btn pri" onclick="createInvoice()">Create Invoice</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"><div class="n-dot"></div><span id="notif-txt">—</span></div>
+
+<!-- OPENCLAW SETUP MODAL -->
+<div class="modal-ov" id="openclaw-setup-modal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head">
+      <div class="modal-title">💬 Connect WhatsApp & iMessage</div>
+      <button class="close-btn" onclick="closeModal('openclaw-setup-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--pink3);border-radius:var(--r);padding:14px;margin-bottom:16px">
+        <div style="font-weight:700;font-size:13px;color:var(--pink5);margin-bottom:4px">What this does</div>
+        <div style="font-size:12px;color:var(--tx2);line-height:1.7">Customers text your WhatsApp or iMessage → Shine AI auto-responds → messages appear here in real time → reply directly from ShineOS.</div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">Step 1 — Install OpenClaw</div>
+      <div style="background:#1a1a1a;border-radius:var(--r);padding:11px 14px;margin-bottom:14px">
+        <code style="color:#4ade80;font-size:12px;font-family:monospace;line-height:1.8">npm install -g openclaw@latest<br>openclaw onboard</code>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">Step 2 — Start bridge server</div>
+      <div style="background:#1a1a1a;border-radius:var(--r);padding:11px 14px;margin-bottom:14px">
+        <code style="color:#4ade80;font-size:12px;font-family:monospace;line-height:1.8">cd shineos-bridge && npm install && npm start</code>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="form-row">
+        <label class="form-lbl">Bridge Server URL</label>
+        <input class="fi" id="oc-bridge-url" placeholder="http://localhost:3099">
+        <div style="font-size:11px;color:var(--tx3);margin-top:5px">Default is localhost:3099 if running locally</div>
+      </div>
+      <div class="form-row">
+        <label class="form-lbl">API Key</label>
+        <input class="fi" id="oc-api-key" type="password" placeholder="shineos-local">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('openclaw-setup-modal')">Cancel</button>
+      <button class="btn ghost" onclick="testBridgeConnection()">Test Connection</button>
+      <button class="btn pri" onclick="saveBridgeSettings()">Save & Connect</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI ASSISTANT FAB -->
+<div class="ai-fab" id="ai-fab" onclick="toggleAI()">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93V18c0-.55-.45-1-1-1s-1 .45-1 1v1.93C7.06 19.48 4.52 16.94 4.07 13H6c.55 0 1-.45 1-1s-.45-1-1-1H4.07C4.52 7.06 7.06 4.52 11 4.07V6c0 .55.45 1 1 1s1-.45 1-1V4.07C16.94 4.52 19.48 7.06 19.93 11H18c-.55 0-1 .45-1 1s.45 1 1 1h1.93c-.45 3.94-2.99 6.48-6.93 6.93z"/></svg>
+  <div class="ai-pulse" id="ai-pulse"></div>
+</div>
+
+<!-- AI PANEL -->
+<div class="ai-panel" id="ai-panel">
+  <div class="ai-head">
+    <div class="ai-av">✨</div>
+    <div>
+      <div class="ai-head-name">Shine AI</div>
+      <div class="ai-head-status"><div class="ai-head-dot" id="ai-dot"></div><span id="ai-status">Ready to help</span></div>
+    </div>
+    <button class="ai-close" onclick="toggleAI()">✕</button>
+  </div>
+  <div class="ai-msgs" id="ai-msgs"></div>
+  <div class="ai-chips-row">
+    <div class="ai-chip" onclick="askShineAI('How much did I make today?')">Today's earnings</div>
+    <div class="ai-chip" onclick="askShineAI('Who should I follow up with?')">Follow-ups</div>
+    <div class="ai-chip" onclick="askShineAI('What is my most profitable service?')">Best service</div>
+    <div class="ai-chip" onclick="askShineAI('Give me a marketing tip for nurses')">Marketing tips</div>
+    <div class="ai-chip" onclick="askShineAI('How do I grow my Uber driver client base?')">Grow Uber clients</div>
+    <div class="ai-chip" onclick="askShineAI('Write me an Instagram caption for a before/after photo')">IG caption</div>
+    <div class="ai-chip" onclick="askShineAI('What supplies do I need to restock?')">Restock list</div>
+  </div>
+  <div class="ai-input-row">
+    <textarea class="ai-inp" id="ai-inp" placeholder="Ask anything about your business…" rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendShineAI()}"
+      oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+    <button class="ai-send-btn" id="ai-send" onclick="sendShineAI()">
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//   STATE
+// ═══════════════════════════════════════════════
+const TODAY = new Date();
+let calYear  = TODAY.getFullYear();
+let calMonth = TODAY.getMonth();
+
+let BOOKINGS = [
+  {id:'b1',name:'Aisha Thompson',phone:'+1 416 555 0123',service:'Full Interior + Exterior',price:180,date:'2026-03-25',time:'09:00',type:'Nurse',address:'Toronto General Hospital Parking Lot B',tech:'Both',notes:'2021 Honda Civic Silver',status:'Confirmed'},
+  {id:'b2',name:'Marcus Johnson',phone:'+1 647 555 0456',service:'Uber/Lyft Driver Package',price:110,date:'2026-03-25',time:'11:30',type:'Uber Driver',address:'1234 Yonge St',tech:'George',notes:'2019 Toyota Camry Black',status:'Confirmed'},
+  {id:'b3',name:'Sandra Okafor',phone:'+1 416 555 0789',service:'Full Interior Detail',price:130,date:'2026-03-25',time:'14:00',type:'Nurse',address:'Sunnybrook Hospital Lot C',tech:'You',notes:'2020 Hyundai Tucson White',status:'Confirmed'},
+  {id:'b4',name:'David Chen',phone:'+1 647 555 1234',service:'Exterior Wash + Dry',price:90,date:'2026-03-26',time:'10:00',type:'Regular',address:'45 Front St W',tech:'Both',notes:'2018 BMW 3 Series Grey',status:'Confirmed'},
+  {id:'b5',name:'Priya Sharma',phone:'+1 416 555 5678',service:'Nurse Parking Lot Special',price:140,date:'2026-03-27',time:'09:30',type:'Nurse',address:'St Michaels Hospital Parking',tech:'Both',notes:'2022 Toyota RAV4 Red',status:'Pending'},
+  {id:'b6',name:'Jerome Williams',phone:'+1 647 555 9012',service:'Uber/Lyft Driver Package',price:110,date:'2026-03-28',time:'13:00',type:'Uber Driver',address:'Pearson Airport Pickup Zone',tech:'George',notes:'2020 Ford Fusion Blue',status:'Confirmed'},
+  {id:'b7',name:'Lisa Park',phone:'+1 416 555 3456',service:'Monthly Maintenance (2x)',price:250,date:'2026-03-29',time:'11:00',type:'Regular',address:'200 Bay St',tech:'Both',notes:'2023 Kia Sportage White',status:'Confirmed'},
+  {id:'b8',name:'Kevin Osei',phone:'+1 647 555 7890',service:'Full Interior + Exterior',price:180,date:'2026-03-30',time:'10:00',type:'Uber Driver',address:'955 Warden Ave',tech:'Both',notes:'2019 Honda Accord Black',status:'Pending'},
+];
+
+let CUSTOMERS = [
+  {name:'Aisha Thompson',phone:'+1 416 555 0123',email:'aisha@email.com',type:'Nurse',vehicle:'2021 Honda Civic Silver',lastService:'Mar 25',totalSpent:520,visits:4,source:'Hospital',notes:'Regular every 3 weeks'},
+  {name:'Marcus Johnson',phone:'+1 647 555 0456',email:'marcus@email.com',type:'Uber Driver',vehicle:'2019 Toyota Camry Black',lastService:'Mar 25',totalSpent:440,visits:4,source:'Uber Driver Group',notes:'Needs odour treatment sometimes'},
+  {name:'Sandra Okafor',phone:'+1 416 555 0789',email:'',type:'Nurse',vehicle:'2020 Hyundai Tucson White',lastService:'Mar 25',totalSpent:390,visits:3,source:'Instagram',notes:''},
+  {name:'David Chen',phone:'+1 647 555 1234',email:'david@email.com',type:'Regular',vehicle:'2018 BMW 3 Series Grey',lastService:'Mar 26',totalSpent:270,visits:3,source:'Referral',notes:'Wants wax add-on next time'},
+  {name:'Priya Sharma',phone:'+1 416 555 5678',email:'',type:'Nurse',vehicle:'2022 Toyota RAV4 Red',lastService:'—',totalSpent:0,visits:0,source:'Hospital',notes:'New customer'},
+  {name:'Jerome Williams',phone:'+1 647 555 9012',email:'',type:'Uber Driver',vehicle:'2020 Ford Fusion Blue',lastService:'Mar 15',totalSpent:330,visits:3,source:'Uber Driver Group',notes:''},
+  {name:'Lisa Park',phone:'+1 416 555 3456',email:'lisa@email.com',type:'Regular',vehicle:'2023 Kia Sportage White',lastService:'Mar 1',totalSpent:500,visits:2,source:'TikTok',notes:'Monthly plan subscriber'},
+  {name:'Kevin Osei',phone:'+1 647 555 7890',email:'',type:'Uber Driver',vehicle:'2019 Honda Accord Black',lastService:'Mar 10',totalSpent:290,visits:2,source:'Uber Driver Group',notes:''},
+  {name:'Michelle Tremblay',phone:'+1 416 555 2222',email:'',type:'Nurse',vehicle:'2021 Mazda CX-5 Silver',lastService:'Mar 18',totalSpent:140,visits:1,source:'Referral',notes:'Referred by Aisha'},
+  {name:'Anthony Brown',phone:'+1 647 555 3333',email:'',type:'Uber Driver',vehicle:'2018 Toyota Corolla White',lastService:'Mar 20',totalSpent:220,visits:2,source:'Uber Driver Group',notes:''},
+  {name:'Fatima Al-Hassan',phone:'+1 416 555 4444',email:'',type:'Nurse',vehicle:'2022 Honda HR-V Black',lastService:'Mar 22',totalSpent:180,visits:1,source:'Instagram',notes:''},
+  {name:'Brandon Lee',phone:'+1 647 555 5555',email:'',type:'Regular',vehicle:'2020 Volkswagen Golf Red',lastService:'Mar 5',totalSpent:180,visits:1,source:'TikTok',notes:''},
+];
+
+let INVOICES = [
+  {id:'INV-001',client:'Aisha Thompson',service:'Full Interior + Exterior',date:'Mar 25, 2026',amount:180,status:'Paid',method:'E-transfer'},
+  {id:'INV-002',client:'Marcus Johnson',service:'Uber/Lyft Driver Package',date:'Mar 25, 2026',amount:110,status:'Paid',method:'Cash'},
+  {id:'INV-003',client:'Sandra Okafor',service:'Full Interior Detail',date:'Mar 25, 2026',amount:130,status:'Paid',method:'Cash'},
+  {id:'INV-004',client:'David Chen',service:'Exterior Wash + Dry',date:'Mar 24, 2026',amount:90,status:'Paid',method:'E-transfer'},
+  {id:'INV-005',client:'Jerome Williams',service:'Uber Package + Odour',date:'Mar 22, 2026',amount:160,status:'Paid',method:'Cash'},
+  {id:'INV-006',client:'Lisa Park',service:'Monthly Maintenance',date:'Mar 20, 2026',amount:250,status:'Paid',method:'E-transfer'},
+  {id:'INV-007',client:'Kevin Osei',service:'Full Interior + Exterior',date:'Mar 18, 2026',amount:180,status:'Pending',method:'Cash'},
+  {id:'INV-008',client:'Michelle Tremblay',service:'Nurse Parking Lot Special',date:'Mar 15, 2026',amount:140,status:'Paid',method:'E-transfer'},
+  {id:'INV-009',client:'Anthony Brown',service:'Uber Package',date:'Mar 14, 2026',amount:110,status:'Paid',method:'Cash'},
+  {id:'INV-010',client:'Brandon Lee',service:'Full Interior + Exterior',date:'Mar 12, 2026',amount:180,status:'Pending',method:'Credit Card'},
+];
+
+const SERVICES = [
+  {name:'Basic Interior Vacuum',price:70,time:'45 min',desc:'Vacuum all seats, floor mats, trunk. Wipe down dashboard and surfaces.',tag:'Entry Level'},
+  {name:'Exterior Wash + Dry',price:90,time:'1 hour',desc:'Hand wash, clay bar, rinse, dry. Includes window clean and tire shine.',tag:'Popular'},
+  {name:'Full Interior Detail',price:130,time:'2–2.5 hrs',desc:'Deep vacuum, shampoo seats, clean all surfaces, deodorise, windows.',tag:'Popular'},
+  {name:'Full Interior + Exterior',price:180,time:'3 hrs',desc:'The works — complete inside and out. Most popular package.',tag:'Best Value',highlight:true},
+  {name:'Uber/Lyft Driver Package',price:110,time:'2 hrs',desc:'Interior focus with odour treatment and window clean. Perfect for ride-share drivers.',tag:'For Drivers'},
+  {name:'Nurse Parking Lot Special',price:140,time:'2 hrs',desc:'We come to your hospital or workplace parking lot while you work. Full interior detail.',tag:'Signature'},
+  {name:'Monthly Maintenance Plan',price:250,time:'2x/month',desc:'Two full services per month. Priority booking. Best value for regular clients.',tag:'Best Deal',highlight:true},
+  {name:'Odour Elimination',price:50,time:'+30 min',desc:'Ozone treatment + deodoriser. Essential for pet owners and smokers.',tag:'Add-on'},
+  {name:'Pet Hair Removal',price:60,time:'+45 min',desc:'Specialised tools to remove embedded pet hair from seats and carpet.',tag:'Add-on'},
+  {name:'Wax & Sealant',price:100,time:'+1 hr',desc:'Hand applied carnauba wax or synthetic sealant. Protection lasts 3–6 months.',tag:'Add-on'},
+];
+
+// ═══════════════════════════════════════════════
+//   NAV
+// ═══════════════════════════════════════════════
+const PAGE_INFO = {
+  messages:{title:'Messages',sub:'Customer messages from WhatsApp & iMessage — powered by OpenClaw'},
+  overview:{title:'Dashboard',sub:'Welcome back — your business at a glance'},
+  bookings:{title:'Bookings',sub:'Manage your schedule and calendar'},
+  route:{title:"Today's Route",sub:'Optimised stop order for the day'},
+  customers:{title:'Customers',sub:'Your client base — Uber drivers, nurses and regulars'},
+  invoices:{title:'Invoices',sub:'Billing and payment tracking'},
+  financials:{title:'Financials',sub:'Revenue, expenses and profit breakdown'},
+  services:{title:'Service Menu',sub:'Your offering and pricing'}
+};
+function nav(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>{
+    if((n.getAttribute('onclick')||'').includes("'"+id+"'")) n.classList.add('on');
+  });
+  document.getElementById('pg-title').textContent=PAGE_INFO[id].title;
+  document.getElementById('pg-sub').textContent=PAGE_INFO[id].sub;
+  if(id==='financials') setTimeout(initFinChart,80);
+  if(id==='overview') setTimeout(initCharts,80);
+  if(id==='bookings') renderCalendar();
+  if(id==='route') renderRoute();
+  if(id==='customers') renderCustomers();
+  if(id==='invoices') renderInvoices();
+  if(id==='services') renderServices();
+  if(id==='messages'){ MSG.startPolling(); } else { MSG.stopPolling(); }
+}
+
+// ═══════════════════════════════════════════════
+//   NOTIFICATIONS
+// ═══════════════════════════════════════════════
+function showNotif(msg){
+  const n=document.getElementById('notif');
+  document.getElementById('notif-txt').textContent=msg;
+  n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'),3500);
+}
+
+// ═══════════════════════════════════════════════
+//   MODALS
+// ═══════════════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+// ═══════════════════════════════════════════════
+//   OVERVIEW
+// ═══════════════════════════════════════════════
+function renderOverview(){
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todayBookings = BOOKINGS.filter(b=>b.date===todayStr);
+  const todayRev = todayBookings.reduce((s,b)=>s+b.price,0);
+  document.getElementById('ov-today-rev').textContent = '$'+todayRev;
+  document.getElementById('ov-customers').textContent = CUSTOMERS.length;
+
+  // Today's schedule
+  const sched = document.getElementById('ov-schedule');
+  if(todayBookings.length===0){
+    sched.innerHTML='<div style="text-align:center;padding:20px;color:var(--tx3);font-size:12px">No bookings today</div>';
+  } else {
+    sched.innerHTML = todayBookings.map(b=>`
+      <div class="booking-card">
+        <div class="bk-time"><div class="bk-time-val">${formatTime(b.time)}</div><div class="bk-time-ampm">${getAMPM(b.time)}</div></div>
+        <div class="bk-line"></div>
+        <div class="bk-info">
+          <div class="bk-name">${b.name}</div>
+          <div class="bk-meta"><span>✨ ${b.service.split(' — ')[0]}</span><span>📍 ${b.address.substring(0,25)}…</span></div>
+        </div>
+        <div class="bk-price">$${b.price}</div>
+      </div>`).join('');
+  }
+
+  // Activity
+  document.getElementById('ov-activity').innerHTML=`
+    <div class="ai-item"><div class="ai-ico" style="background:var(--pink3)">✨</div><div><div class="ai-txt"><strong>New booking confirmed</strong> — Sandra Okafor, Full Interior Detail</div><div class="ai-time">Today · 2:00 PM</div></div></div>
+    <div class="ai-item"><div class="ai-ico" style="background:var(--gbg)">💰</div><div><div class="ai-txt"><strong>Invoice paid</strong> — Marcus Johnson · $110 cash</div><div class="ai-time">Today · 11:30 AM</div></div></div>
+    <div class="ai-item"><div class="ai-ico" style="background:var(--pink3)">👤</div><div><div class="ai-txt"><strong>New customer added</strong> — Priya Sharma (Nurse)</div><div class="ai-time">Yesterday</div></div></div>
+    <div class="ai-item"><div class="ai-ico" style="background:var(--abg)">⭐</div><div><div class="ai-txt"><strong>5-star review</strong> — "Amazing service, will definitely book again!" — Lisa P.</div><div class="ai-time">2 days ago</div></div></div>
+    <div class="ai-item"><div class="ai-ico" style="background:var(--gbg)">💰</div><div><div class="ai-txt"><strong>Monthly plan renewed</strong> — Lisa Park · $250</div><div class="ai-time">Mar 20</div></div></div>`;
+}
+
+function formatTime(t){const [h,m]=t.split(':');const h12=parseInt(h)%12||12;return `${h12}:${m}`;}
+function getAMPM(t){return parseInt(t.split(':')[0])<12?'AM':'PM';}
+
+// ═══════════════════════════════════════════════
+//   CALENDAR
+// ═══════════════════════════════════════════════
+function renderCalendar(){
+  const lbl=document.getElementById('cal-month-label');
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  lbl.textContent=`${months[calMonth]} ${calYear}`;
+
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const daysInPrev=new Date(calYear,calMonth,0).getDate();
+
+  const bookingDates=new Set(BOOKINGS.map(b=>b.date));
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML=['Su','Mo','Tu','We','Th','Fr','Sa'].map(d=>`<div class="cal-day-hdr">${d}</div>`).join('');
+
+  // Prev month days
+  for(let i=firstDay-1;i>=0;i--){
+    const d=daysInPrev-i;
+    grid.innerHTML+=`<div class="cal-day other-month">${d}</div>`;
+  }
+  // Current month
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=d===TODAY.getDate()&&calMonth===TODAY.getMonth()&&calYear===TODAY.getFullYear();
+    const hasBook=bookingDates.has(dateStr);
+    grid.innerHTML+=`<div class="cal-day ${isToday?'today':''} ${hasBook?'has-booking':''}" onclick="showDayBookings('${dateStr}',${d})">${d}</div>`;
+  }
+  showDayBookings(TODAY.toISOString().split('T')[0], TODAY.getDate());
+  renderAllBookings();
+}
+
+function showDayBookings(dateStr, d){
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('day-label').textContent=`${months[calMonth]} ${d}`;
+  const day=BOOKINGS.filter(b=>b.date===dateStr).sort((a,b)=>a.time.localeCompare(b.time));
+  const el=document.getElementById('day-bookings');
+  if(!day.length){el.innerHTML='<div style="text-align:center;padding:24px;color:var(--tx3);font-size:12px;font-style:italic">No bookings this day</div>';return;}
+  el.innerHTML=day.map(b=>`
+    <div class="booking-card">
+      <div class="bk-time"><div class="bk-time-val">${formatTime(b.time)}</div><div class="bk-time-ampm">${getAMPM(b.time)}</div></div>
+      <div class="bk-line"></div>
+      <div class="bk-info">
+        <div class="bk-name">${b.name}</div>
+        <div class="bk-meta"><span>${b.type==='Nurse'?'🏥':b.type==='Uber Driver'?'🚗':'⭐'} ${b.type}</span><span>👤 ${b.tech}</span></div>
+        <div class="bk-meta" style="margin-top:2px"><span>✨ ${b.service.split(' — ')[0]}</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+        <div class="bk-price">$${b.price}</div>
+        <span class="badge ${b.status==='Confirmed'?'bg':'ba'}">${b.status}</span>
+        <button class="btn sml" style="font-size:10px;padding:3px 8px" onclick="completeBooking('${b.id}')">✓ Done</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderAllBookings(){
+  const upcoming=BOOKINGS.sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+  document.getElementById('booking-total-badge').innerHTML=`<span class="badge bp">${upcoming.length} total</span>`;
+  document.getElementById('all-bookings-list').innerHTML=upcoming.map(b=>`
+    <div class="booking-card" style="cursor:default">
+      <div class="bk-time"><div class="bk-time-val">${formatTime(b.time)}</div><div class="bk-time-ampm">${getAMPM(b.time)}</div></div>
+      <div class="bk-line"></div>
+      <div class="bk-info">
+        <div class="bk-name">${b.name} <span style="font-size:10px;color:var(--tx3);font-weight:400">· ${b.date}</span></div>
+        <div class="bk-meta"><span>${b.service.split('—')[0].trim()}</span><span>📍 ${b.address.substring(0,30)}</span><span>👤 ${b.tech}</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+        <div class="bk-price">$${b.price}</div>
+        <span class="badge ${b.status==='Confirmed'?'bg':'ba'}">${b.status}</span>
+      </div>
+    </div>`).join('');
+}
+
+function prevMonth(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
+function nextMonth(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCalendar();}
+
+function completeBooking(id){
+  const b=BOOKINGS.find(x=>x.id===id);
+  if(!b) return;
+  b.status='Completed';
+  // Add invoice
+  INVOICES.unshift({id:'INV-'+(INVOICES.length+1).toString().padStart(3,'0'),client:b.name,service:b.service,date:new Date().toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'}),amount:b.price,status:'Paid',method:'Cash'});
+  renderCalendar();
+  showNotif(`✅ ${b.name} marked complete — invoice created`);
+}
+
+// ═══════════════════════════════════════════════
+//   ROUTE PLANNER
+// ═══════════════════════════════════════════════
+function renderRoute(){
+  const todayStr=new Date().toISOString().split('T')[0];
+  const todayJobs=BOOKINGS.filter(b=>b.date===todayStr).sort((a,b)=>a.time.localeCompare(b.time));
+  document.getElementById('route-date').textContent=new Date().toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'});
+
+  const totalRev=todayJobs.reduce((s,b)=>s+b.price,0);
+  const totalHrs=todayJobs.length*2.5;
+  document.getElementById('route-summary').textContent=`${todayJobs.length} stops · Est. $${totalRev} · ~${totalHrs} hours`;
+
+  const stopsEl=document.getElementById('route-stops');
+  if(!todayJobs.length){stopsEl.innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:13px">No stops today — enjoy your day off! 🌸</div>';return;}
+  stopsEl.innerHTML=todayJobs.map((b,i)=>`
+    <div class="route-stop">
+      <div class="stop-num">${i+1}</div>
+      <div class="stop-connector"></div>
+      <div class="stop-info">
+        <div class="stop-name">${b.name}</div>
+        <div class="stop-addr">📍 ${b.address}</div>
+        <div class="stop-svc">✨ ${b.service.split('—')[0].trim()}</div>
+        <div class="stop-meta"><span>🕐 ${formatTime(b.time)} ${getAMPM(b.time)}</span><span>${b.type==='Nurse'?'🏥 Hospital':'🚗 Driver'}</span><span>👤 ${b.tech}</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <div class="stop-price">$${b.price}</div>
+        <button class="btn sml ghost" onclick="openMapsTo('${b.address}')">Navigate ↗</button>
+      </div>
+    </div>`).join('');
+
+  // Summary cards
+  document.getElementById('route-summary-cards').innerHTML=`
+    <div style="background:var(--pink3);border-radius:var(--r);padding:12px;display:flex;justify-content:space-between">
+      <span style="font-size:12px;color:var(--pink5);font-weight:600">Estimated earnings</span>
+      <span style="font-family:'Nunito',sans-serif;font-weight:700;font-size:16px;color:var(--pink)">$${totalRev}</span>
+    </div>
+    <div style="background:var(--surf2);border-radius:var(--r);padding:12px;display:flex;justify-content:space-between;border:1px solid var(--bdr)">
+      <span style="font-size:12px;color:var(--tx2)">Your cut (50%)</span>
+      <span style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px">$${Math.round(totalRev/2)}</span>
+    </div>
+    <div style="background:var(--surf2);border-radius:var(--r);padding:12px;display:flex;justify-content:space-between;border:1px solid var(--bdr)">
+      <span style="font-size:12px;color:var(--tx2)">George's cut (50%)</span>
+      <span style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px">$${Math.round(totalRev/2)}</span>
+    </div>`;
+
+  // Checklist
+  const supplies=['Wet/dry vacuum ✓','Pressure washer ✓','Water tank (50% full)','Microfibre towels (×20)','All-purpose cleaner','Interior cleaner','Glass cleaner','Tire shine','Foam cannon + hose','Extension cord (50ft)'];
+  document.getElementById('supply-checklist').innerHTML=supplies.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bdr);${i===supplies.length-1?'border-bottom:none':''}">
+      <input type="checkbox" ${i<2?'checked':''} style="accent-color:var(--pink);width:14px;height:14px;cursor:pointer">
+      <span style="font-size:12px;color:var(--tx)">${s.replace(' ✓','')}</span>
+    </div>`).join('');
+}
+
+function openMaps(){showNotif('Opening Google Maps with full route…');}
+function openMapsTo(addr){window.open(`https://maps.google.com?q=${encodeURIComponent(addr)}`);}
+
+// ═══════════════════════════════════════════════
+//   CUSTOMERS
+// ═══════════════════════════════════════════════
+function filterCustomers(){
+  const q=(document.getElementById('cust-search').value||'').toLowerCase();
+  const t=document.getElementById('cust-filter').value;
+  renderCustomers(CUSTOMERS.filter(c=>{
+    if(q&&!c.name.toLowerCase().includes(q)&&!(c.vehicle||'').toLowerCase().includes(q))return false;
+    if(t&&c.type!==t)return false;
+    return true;
+  }));
+}
+
+function renderCustomers(list){
+  list=list||CUSTOMERS;
+  const typeBadge={Nurse:'bp','Uber Driver':'bb',Regular:'bg',New:'ba'};
+  document.getElementById('customers-tbody').innerHTML=list.map((c,i)=>{
+    const initials=c.name.split(' ').map(w=>w[0]).join('').substring(0,2);
+    return`<tr>
+      <td><div class="c-name-cell"><div class="cav">${initials}</div><div><div style="font-weight:600">${c.name}</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">${c.vehicle||'—'}</div></div></div></td>
+      <td><span class="badge ${typeBadge[c.type]||'bgr'}">${c.type}</span></td>
+      <td style="color:var(--tx2)">${c.phone}</td>
+      <td style="color:var(--tx3)">${c.lastService}</td>
+      <td style="font-family:'Nunito',sans-serif;font-weight:700">$${c.totalSpent}</td>
+      <td><span class="badge ${c.visits>=3?'bg':'ba'}">${c.visits} visit${c.visits!==1?'s':''}</span></td>
+      <td style="display:flex;gap:5px">
+        <button class="btn sml" onclick="sendWACustomer(${i})">📲</button>
+        <button class="btn sml" onclick="CUSTOMERS.splice(${i},1);renderCustomers();showNotif('Customer removed')">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function sendWACustomer(i){
+  const c=CUSTOMERS[i];
+  const msg=`Hi ${c.name.split(' ')[0]}! 🌸\n\nThis is ShineOS Mobile Detailing. We'd love to book your next detail!\n\nYour vehicle: ${c.vehicle}\nPreferred service: ${c.preferredService||'Full Detail'}\n\nReply to book your next appointment ✨`;
+  const num=(c.phone||'').replace(/[^0-9]/g,'');
+  window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+// ═══════════════════════════════════════════════
+//   INVOICES
+// ═══════════════════════════════════════════════
+function renderInvoices(){
+  const outstanding=INVOICES.filter(i=>i.status==='Pending').reduce((s,i)=>s+i.amount,0);
+  const paid=INVOICES.filter(i=>i.status==='Paid').reduce((s,i)=>s+i.amount,0);
+  const avg=Math.round(paid/Math.max(INVOICES.filter(i=>i.status==='Paid').length,1));
+  document.getElementById('inv-outstanding').textContent='$'+outstanding;
+  document.getElementById('inv-paid').textContent='$'+paid;
+  document.getElementById('inv-avg').textContent='$'+avg;
+
+  document.getElementById('invoices-list').innerHTML=INVOICES.map(inv=>`
+    <div class="inv-card">
+      <div>
+        <div class="inv-num">${inv.id}</div>
+        <div class="inv-client">${inv.client}</div>
+        <div class="inv-date">${inv.service} · ${inv.date} · ${inv.method}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="badge ${inv.status==='Paid'?'bg':'ba'}">${inv.status}</span>
+        <div class="inv-amount">$${inv.amount}</div>
+        <button class="btn sml" onclick="showNotif('Invoice ${inv.id} details coming soon')">View</button>
+      </div>
+    </div>`).join('');
+}
+
+function updateInvoiceTotal(){
+  const base=parseInt(document.getElementById('qi-service').value)||0;
+  const addon=parseInt(document.getElementById('qi-addon').value)||0;
+  const tip=parseInt(document.getElementById('qi-tip').value)||0;
+  document.getElementById('qi-total').textContent='$'+(base+addon+tip);
+}
+
+function createInvoice(){
+  const name=document.getElementById('qi-name').value||'Customer';
+  const service=document.getElementById('qi-service').options[document.getElementById('qi-service').selectedIndex].text;
+  const amount=parseInt(document.getElementById('qi-total').textContent.replace('$',''));
+  const status=document.getElementById('qi-status').value;
+  const method=document.getElementById('qi-payment').value;
+  const date=new Date().toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'});
+  const id='INV-'+(INVOICES.length+1).toString().padStart(3,'0');
+  INVOICES.unshift({id,client:name,service:service.split('—')[0].trim(),date,amount,status,method});
+  closeModal('quick-invoice-modal');
+  renderInvoices();
+  showNotif(`✅ Invoice ${id} created — $${amount}`);
+}
+
+function sendInvoiceWA(){
+  const name=document.getElementById('qi-name').value||'Customer';
+  const total=document.getElementById('qi-total').textContent;
+  const service=document.getElementById('qi-service').options[document.getElementById('qi-service').selectedIndex].text.split('—')[0].trim();
+  const msg=`Hi ${name}! 🌸\n\nThank you for choosing ShineOS Mobile Detailing!\n\n✨ Service: ${service}\n💰 Total: ${total}\n\nPayment methods: Cash, E-transfer, or Credit Card\n\nThank you for your business! ⭐`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+// ═══════════════════════════════════════════════
+//   SERVICES
+// ═══════════════════════════════════════════════
+function renderServices(){
+  const tagColor={Popular:'bg','Best Value':'bp','Best Deal':'bp','For Drivers':'bb',Signature:'bp','Add-on':'bgr','Entry Level':'bgr'};
+  document.getElementById('services-grid').innerHTML=SERVICES.map(s=>`
+    <div class="svc-card" style="${s.highlight?'border-color:var(--pink);border-width:2px':''}">
+      ${s.highlight?`<div style="background:var(--pink);color:#fff;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px">⭐ Most Popular</div>`:''}
+      <div class="svc-name">${s.name}</div>
+      <div class="svc-price">$${s.price}</div>
+      <div class="svc-time">⏱ ${s.time}</div>
+      <div class="svc-desc">${s.desc}</div>
+      <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
+        <span class="badge ${tagColor[s.tag]||'bgr'}">${s.tag}</span>
+        <button class="btn sml" onclick="openModal('new-booking-modal')">Book →</button>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+//   ADD BOOKING / CUSTOMER
+// ═══════════════════════════════════════════════
+function addBooking(){
+  const name=document.getElementById('nb-name').value.trim();
+  if(!name){showNotif('⚠️ Please enter customer name');return;}
+  const svc=document.getElementById('nb-service').value;
+  const priceMatch=svc.match(/\$(\d+)/);
+  const price=priceMatch?parseInt(priceMatch[1]):120;
+  BOOKINGS.push({
+    id:'b'+Date.now(),
+    name,phone:document.getElementById('nb-phone').value,
+    service:svc.split(' — ')[0],price,
+    date:document.getElementById('nb-date').value||new Date().toISOString().split('T')[0],
+    time:document.getElementById('nb-time').value||'09:00',
+    type:document.getElementById('nb-type').value,
+    address:document.getElementById('nb-address').value||'TBD',
+    tech:document.getElementById('nb-tech').value,
+    notes:document.getElementById('nb-notes').value,
+    status:'Confirmed'
+  });
+  document.getElementById('nb-name').value='';
+  document.getElementById('nb-phone').value='';
+  document.getElementById('nb-address').value='';
+  document.getElementById('nb-notes').value='';
+  closeModal('new-booking-modal');
+  document.getElementById('nb-bookings').textContent=BOOKINGS.filter(b=>b.status==='Confirmed').length;
+  renderOverview();renderCalendar();
+  showNotif(`✅ Booking confirmed for ${name}!`);
+}
+
+function addCustomer(){
+  const name=document.getElementById('nc-name').value.trim();
+  if(!name){showNotif('⚠️ Please enter customer name');return;}
+  CUSTOMERS.push({
+    name,phone:document.getElementById('nc-phone').value,
+    email:document.getElementById('nc-email').value,
+    type:document.getElementById('nc-type').value,
+    vehicle:document.getElementById('nc-vehicle').value,
+    lastService:'—',totalSpent:0,visits:0,
+    source:document.getElementById('nc-source').value,
+    notes:document.getElementById('nc-notes').value
+  });
+  ['nc-name','nc-phone','nc-email','nc-vehicle','nc-notes'].forEach(id=>document.getElementById(id).value='');
+  closeModal('new-customer-modal');
+  renderCustomers();renderOverview();
+  showNotif(`✅ ${name} added to customers`);
+}
+
+// ═══════════════════════════════════════════════
+//   FINANCIALS
+// ═══════════════════════════════════════════════
+function renderFinancials(){
+  const expenses=[
+    {name:'Cleaning Supplies',amount:180,pct:35,color:'var(--purple)'},
+    {name:'Fuel',amount:160,pct:31,color:'var(--pink)'},
+    {name:'Insurance',amount:90,pct:17,color:'var(--purple2)'},
+    {name:'Marketing',amount:50,pct:10,color:'#f9a8d4'},
+    {name:'Equipment Maintenance',amount:40,pct:8,color:'#fbcfe8'},
+  ];
+  document.getElementById('expense-breakdown').innerHTML=expenses.map(e=>`
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:12px;color:var(--tx2)">${e.name}</span>
+        <span style="font-size:12px;font-weight:600">$${e.amount}</span>
+      </div>
+      <div style="height:6px;background:var(--pink3);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${e.pct}%;background:${e.color};border-radius:3px"></div>
+      </div>
+    </div>`).join('');
+
+  const profitData=[
+    {service:'Full Int + Ext',price:180,cost:18,time:'3hr',hourly:54,margin:90},
+    {service:'Full Interior',price:130,cost:14,time:'2.5hr',hourly:46,margin:89},
+    {service:'Nurse Package',price:140,cost:14,time:'2hr',hourly:63,margin:90},
+    {service:'Uber Package',price:110,cost:12,time:'2hr',hourly:49,margin:89},
+    {service:'Ext Wash',price:90,cost:10,time:'1hr',hourly:80,margin:89},
+    {service:'Monthly Plan',price:125,cost:12,time:'2hr',hourly:57,margin:90},
+  ];
+  document.getElementById('profitability-tbody').innerHTML=profitData.map(p=>`
+    <tr>
+      <td style="font-weight:500">${p.service}</td>
+      <td style="font-family:'Nunito',sans-serif;font-weight:700">$${p.price}</td>
+      <td style="color:var(--tx2)">$${p.cost}</td>
+      <td style="color:var(--tx2)">${p.time}</td>
+      <td style="font-family:'Nunito',sans-serif;font-weight:700;color:var(--pink)">$${p.hourly}/hr</td>
+      <td><span class="badge bg">${p.margin}%</span></td>
+    </tr>`).join('');
+}
+
+let finChart=null;
+function initFinChart(){
+  const ctx=document.getElementById('fin-chart');
+  if(!ctx)return;
+  if(finChart)finChart.destroy();
+  finChart=new Chart(ctx,{type:'bar',data:{
+    labels:['Oct','Nov','Dec','Jan','Feb','Mar'],
+    datasets:[
+      {label:'Revenue',data:[1800,2100,1600,2800,3100,3240],backgroundColor:'#E84393',borderRadius:5},
+      {label:'Expenses',data:[380,420,350,460,490,520],backgroundColor:'#C4B5FD',borderRadius:5},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}}},scales:{y:{grid:{color:'#FDF2F8'},ticks:{font:{size:11},callback:v=>'$'+v}},x:{grid:{display:false},ticks:{font:{size:11}}}}}});
+}
+
+let revChart=null,svcChart=null;
+function initCharts(){
+  const c1=document.getElementById('rev-chart');
+  if(c1){
+    if(revChart)revChart.destroy();
+    revChart=new Chart(c1,{type:'line',data:{
+      labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      datasets:[{label:'Revenue',data:[390,220,310,0,140,520,180],borderColor:'#7C3AED',backgroundColor:'rgba(124,58,237,.07)',fill:true,tension:.4,pointBackgroundColor:'#7C3AED',pointRadius:4}]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#FDF2F8'},ticks:{font:{size:11},callback:v=>'$'+v}},x:{grid:{display:false},ticks:{font:{size:11}}}}}});
+  }
+  const c2=document.getElementById('svc-chart');
+  if(c2){
+    if(svcChart)svcChart.destroy();
+    svcChart=new Chart(c2,{type:'doughnut',data:{
+      labels:['Full Int+Ext','Interior Detail','Uber Package','Nurse Special','Ext Wash','Monthly Plan'],
+      datasets:[{data:[35,22,18,12,8,5],backgroundColor:['#7C3AED','#E84393','#A78BFA','#F472B6','#C4B5FD','#FCE7F3'],borderWidth:0}]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:10}}}}});
+  }
+}
+
+// ═══════════════════════════════════════════════
+//   AI ASSISTANT — SHINE AI
+//  ═══════════════════════════════════════════════
+const ShineAI = {
+  open:false, thinking:false, history:[],
+  apiKey: localStorage.getItem('shine-api-key')||'',
+
+  buildContext(){
+    const todayStr=new Date().toISOString().split('T')[0];
+    const todayJobs=BOOKINGS.filter(b=>b.date===todayStr);
+    const todayRev=todayJobs.reduce((s,b)=>s+b.price,0);
+    const monthRev=INVOICES.filter(i=>i.status==='Paid').reduce((s,i)=>s+i.amount,0);
+    const pending=INVOICES.filter(i=>i.status==='Pending').reduce((s,i)=>s+i.amount,0);
+    const nurses=CUSTOMERS.filter(c=>c.type==='Nurse').length;
+    const uber=CUSTOMERS.filter(c=>c.type==='Uber Driver').length;
+    const today=new Date().toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+    return `You are Shine AI, a smart business assistant built into ShineOS — a mobile car detailing business management app.
+
+The business is run by two people: the owner and George (partner/co-technician). They specialise in mobile detailing for Uber/Lyft drivers and nurses, coming directly to their workplace parking lots.
+
+Brand identity: Pink & white. Premium, feminine, professional. The tagline is "We come to you."
+
+TODAY: ${today}
+
+=== BUSINESS SNAPSHOT ===
+Today's jobs: ${todayJobs.length} (est. revenue $${todayRev})
+Month revenue (so far): $${monthRev}
+Outstanding invoices: $${pending}
+Total customers: ${CUSTOMERS.length} (${nurses} nurses, ${uber} Uber drivers)
+Total bookings on record: ${BOOKINGS.length}
+
+=== TODAY'S SCHEDULE ===
+${todayJobs.map(b=>`  - ${formatTime(b.time)} ${getAMPM(b.time)} · ${b.name} · ${b.service} · $${b.price} · ${b.type}`).join('\n')||'  No jobs today'}
+
+=== TOP CUSTOMERS BY SPEND ===
+${CUSTOMERS.sort((a,b)=>b.totalSpent-a.totalSpent).slice(0,5).map(c=>`  - ${c.name} (${c.type}) · $${c.totalSpent} · ${c.visits} visits`).join('\n')}
+
+=== YOUR ROLE ===
+- Answer questions about the business naturally and helpfully
+- Give marketing advice specific to Uber drivers and nurses
+- Help draft WhatsApp/Instagram/TikTok messages
+- Give business growth tips, pricing advice, supply recommendations
+- Calculate earnings, splits, profitability
+- Keep responses concise and practical
+- Use a warm, professional tone matching the pink brand
+- Always end with 2 short follow-up suggestions in <chips>suggestion one|suggestion two</chips>`;
+  },
+
+  async send(msg, silent){
+    if(this.thinking) return;
+    const key=this.apiKey||localStorage.getItem('shine-api-key')||'';
+    if(!key){
+      this.addMsg('bot',"I need an Anthropic API key to work! Add it in Settings or go to console.anthropic.com to get one free. 🌸");
+      return;
+    }
+    if(!silent) this.addMsg('user',msg);
+    this.setThinking(true);
+    this.history.push({role:'user',content:msg});
+    try{
+      const res=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
+        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:this.buildContext(),messages:this.history.slice(-12)})
+      });
+      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`API ${res.status}`);}
+      const data=await res.json();
+      const raw=data.content?.[0]?.text||"Sorry, I couldn't process that.";
+      this.history.push({role:'assistant',content:raw});
+      if(this.history.length>20) this.history=this.history.slice(-16);
+      const chips=raw.match(/<chips>(.*?)<\/chips>/);
+      const chipsArr=chips?chips[1].split('|').map(c=>c.trim()).filter(Boolean):[];
+      const clean=raw.replace(/<chips>.*?<\/chips>/,'').trim();
+      this.addMsg('bot',clean,chipsArr);
+    } catch(e){
+      this.addMsg('bot',`Error: ${e.message} — please check your API key. 💕`);
+    }
+    this.setThinking(false);
+  },
+
+  setThinking(on){
+    this.thinking=on;
+    const dot=document.getElementById('ai-dot');
+    if(dot){dot.className='ai-head-dot'+(on?' busy':'');document.getElementById('ai-status').textContent=on?'Thinking…':'Ready to help';}
+    const sb=document.getElementById('ai-send');
+    if(sb) sb.disabled=on;
+    document.getElementById('ai-typing-ind')?.remove();
+    if(on){
+      const t=document.createElement('div');
+      t.className='ai-msg bot';t.id='ai-typing-ind';
+      t.innerHTML='<div class="ai-msg-av" style="background:var(--pink3);color:var(--pink)">✨</div><div class="ai-typing"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
+      document.getElementById('ai-msgs').appendChild(t);
+      this.scroll();
+    }
+  },
+
+  addMsg(role,text,chips){
+    const el=document.getElementById('ai-msgs');
+    if(!el) return;
+    const div=document.createElement('div');
+    div.className='ai-msg '+role;
+    const fmt=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`(.*?)`/g,'<code style="background:var(--pink3);padding:1px 5px;border-radius:4px;font-size:11px">$1</code>').replace(/\n/g,'<br>');
+    const av=role==='bot'?'<div class="ai-msg-av">✨</div>':'<div class="ai-msg-av">👤</div>';
+    const chipsHTML=(chips&&chips.length)?`<div style="margin-top:6px">${chips.map(c=>`<button class="ai-action-btn" onclick="askShineAI('${c.replace(/'/g,"\\'")}')">${c}</button>`).join('')}</div>`:'';
+    div.innerHTML=role==='bot'?`${av}<div><div class="ai-bubble">${fmt}</div>${chipsHTML}</div>`:`<div><div class="ai-bubble">${fmt}</div></div>${av}`;
+    el.appendChild(div);
+    this.scroll();
+  },
+
+  scroll(){const el=document.getElementById('ai-msgs');if(el)setTimeout(()=>{el.scrollTop=el.scrollHeight;},50);},
+
+  welcome(){
+    if(this.history.length>0) return;
+    const h=new Date().getHours();
+    const g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+    const todayStr=new Date().toISOString().split('T')[0];
+    const todayJobs=BOOKINGS.filter(b=>b.date===todayStr);
+    const todayRev=todayJobs.reduce((s,b)=>s+b.price,0);
+    this.addMsg('bot',
+      `${g}! ✨ I'm Shine AI — your business assistant.\n\nYou have **${todayJobs.length} jobs today** worth **$${todayRev}**. Your month is at **$${INVOICES.filter(i=>i.status==='Paid').reduce((s,i)=>s+i.amount,0)}** so far.\n\nI can help with earnings, marketing, customer messages, pricing — anything. What do you need?`,
+      ["Today's full breakdown","Marketing tip for nurses"]
+    );
+  }
+};
+
+function toggleAI(){
+  ShineAI.open=!ShineAI.open;
+  document.getElementById('ai-panel').classList.toggle('open',ShineAI.open);
+  if(ShineAI.open){ShineAI.welcome();setTimeout(()=>document.getElementById('ai-inp')?.focus(),300);}
+}
+function sendShineAI(){
+  const inp=document.getElementById('ai-inp');
+  const msg=(inp?.value||'').trim();
+  if(!msg||ShineAI.thinking) return;
+  inp.value='';inp.style.height='auto';
+  ShineAI.send(msg);
+}
+function askShineAI(q){if(!ShineAI.open)toggleAI();setTimeout(()=>ShineAI.send(q),ShineAI.open?0:400);}
+
+
+// ═══════════════════════════════════════════════
+//   LOGIN
+// ═══════════════════════════════════════════════
+const SHINE_PIN = () => localStorage.getItem('shine-pin') || 'shine2026';
+
+function loginUpdateDots(val){
+  for(let i=0;i<6;i++){
+    const d = document.getElementById('ld'+i);
+    if(d) d.className = 'login-dot-ind' + (i < val.length ? ' filled' : '');
+  }
+}
+
+function loginSubmit(){
+  const val = (document.getElementById('login-input')?.value || '').trim();
+  const err = document.getElementById('login-error');
+  if(val === SHINE_PIN()){
+    localStorage.setItem('shine-authed', Date.now());
+    const screen = document.getElementById('login-screen');
+    screen.style.transition = 'opacity .4s, transform .4s';
+    screen.style.opacity = '0';
+    screen.style.transform = 'scale(1.04)';
+    setTimeout(() => screen.style.display = 'none', 420);
+  } else {
+    if(err){
+      err.textContent = 'Incorrect code — try again 💕';
+      err.style.animation = 'none';
+      void err.offsetWidth; // reflow to restart animation
+      err.style.animation = 'shake .3s ease-in-out';
+    }
+    const inp = document.getElementById('login-input');
+    if(inp){
+      inp.value = '';
+      loginUpdateDots('');
+      inp.style.borderColor = 'var(--red)';
+      inp.focus();
+      setTimeout(() => { inp.style.borderColor = ''; }, 1200);
+    }
+    setTimeout(() => { if(err) err.textContent = ''; }, 2500);
+  }
+}
+
+function loginCheckSession(){
+  const authed = localStorage.getItem('shine-authed');
+  if(authed && (Date.now() - parseInt(authed)) < 12 * 60 * 60 * 1000){
+    document.getElementById('login-screen').style.display = 'none';
+  } else {
+    // Spawn login bubbles
+    spawnLoginBubbles();
+    setTimeout(() => document.getElementById('login-input')?.focus(), 300);
+  }
+}
+
+function spawnLoginBubbles(){
+  const bg = document.getElementById('login-bubbles');
+  if(!bg) return;
+  const sizes = [16,24,32,44,60,80,110,140];
+  const speeds = [10,14,18,22,26,30];
+  function make(){
+    const b = document.createElement('div');
+    b.className = 'login-bubble';
+    const sz   = sizes[Math.floor(Math.random()*sizes.length)];
+    const spd  = speeds[Math.floor(Math.random()*speeds.length)] + Math.random()*6;
+    const left = 5 + Math.random()*90;
+    const delay = Math.random() * spd;
+    b.style.cssText = `width:${sz}px;height:${sz}px;left:${left}%;bottom:-${sz+10}px;animation-duration:${spd}s;animation-delay:-${delay}s`;
+    bg.appendChild(b);
+    setTimeout(() => b.remove(), (spd + delay) * 1000 * 2);
+  }
+  for(let i=0;i<22;i++) make();
+  setInterval(make, 1400);
+}
+
+loginCheckSession();
+
+// ═══════════════════════════════════════════════
+//   INIT
+// ═══════════════════════════════════════════════
+document.getElementById('nb-date').value=new Date().toISOString().split('T')[0];
+document.getElementById('qi-date').value=new Date().toISOString().split('T')[0];
+
+renderOverview();
+renderCustomers();
+renderInvoices();
+renderServices();
+renderFinancials();
+setTimeout(initCharts,200);
+
+
+// ═══════════════════════════════════════════════
+//   MESSAGING — OpenClaw Bridge
+// ═══════════════════════════════════════════════
+const MSG = {
+  bridgeUrl: localStorage.getItem('shine-bridge-url') || 'http://localhost:3099',
+  apiKey:    localStorage.getItem('shine-bridge-key') || 'shineos-local',
+  messages:  [],
+  threads:   {},     // phone → [messages]
+  activePhone: null,
+  pollInterval: null,
+
+  headers(){
+    return { 'Content-Type':'application/json', 'x-shineos-key': this.apiKey };
+  },
+
+  async fetchMessages(){
+    try{
+      const r = await fetch(`${this.bridgeUrl}/api/messages?limit=200`, { headers: this.headers(), signal: AbortSignal.timeout(4000) });
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      const data = await r.json();
+      this.messages = data.messages || [];
+      this.buildThreads();
+      this.renderConvList();
+      this.updateBadge(data.unread || 0);
+      setBridgeStatus(true, `Connected · ${data.total} messages`);
+      return true;
+    } catch(e){
+      setBridgeStatus(false, 'Bridge offline — start the bridge server');
+      return false;
+    }
+  },
+
+  async fetchPendingBookings(){
+    try{
+      const r = await fetch(`${this.bridgeUrl}/api/bookings/pending`, { headers: this.headers(), signal: AbortSignal.timeout(4000) });
+      if(!r.ok) return;
+      const data = await r.json();
+      renderPendingBookings(data.bookings || []);
+    } catch(e){}
+  },
+
+  buildThreads(){
+    this.threads = {};
+    for(const m of this.messages){
+      const phone = m.type === 'inbound' ? m.from : m.to;
+      if(!phone) continue;
+      if(!this.threads[phone]) this.threads[phone] = { phone, name: m.name || phone, platform: m.platform || 'whatsapp', msgs: [], unread: 0 };
+      this.threads[phone].msgs.push(m);
+      if(m.type === 'inbound' && !m.read) this.threads[phone].unread++;
+    }
+    // Sort threads by latest message
+    for(const t of Object.values(this.threads)) t.msgs.sort((a,b)=>a.ts-b.ts);
+  },
+
+  renderConvList(){
+    const el = document.getElementById('msg-conv-list');
+    const threads = Object.values(this.threads).sort((a,b)=>{
+      const la = a.msgs[a.msgs.length-1]?.ts || 0;
+      const lb = b.msgs[b.msgs.length-1]?.ts || 0;
+      return lb - la;
+    });
+    if(!threads.length){
+      el.innerHTML='<div style="padding:30px;text-align:center;color:var(--tx3);font-size:12px"><div style="font-size:28px;margin-bottom:8px">💬</div>No messages yet — customers will appear here when they text you</div>';
+      return;
+    }
+    el.innerHTML = threads.map(t => {
+      const last = t.msgs[t.msgs.length-1];
+      const initials = (t.name||'?').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+      const preview = last?.body?.substring(0,40) || '—';
+      const time = last ? new Date(last.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+      return `<div class="msg-conv ${this.activePhone===t.phone?'active':''}" onclick="MSG.openThread('${t.phone}')">
+        <div class="msg-conv-av">${initials}</div>
+        <div style="flex:1;min-width:0">
+          <div class="msg-conv-name">${t.name||t.phone}</div>
+          <div class="msg-conv-preview">${preview}</div>
+          <span class="msg-platform ${t.platform}">${t.platform==='imessage'?'iMessage':t.platform==='whatsapp'?'WhatsApp':t.platform}</span>
+        </div>
+        <div class="msg-conv-meta">
+          <div class="msg-conv-time">${time}</div>
+          ${t.unread>0?`<div class="msg-conv-unread"></div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  },
+
+  openThread(phone){
+    this.activePhone = phone;
+    this.renderConvList();
+    const t = this.threads[phone];
+    if(!t){ renderEmptyThread(); return; }
+
+    // Mark as read
+    t.msgs.filter(m=>m.type==='inbound'&&!m.read).forEach(async m=>{
+      m.read=true;
+      try{ await fetch(`${this.bridgeUrl}/api/messages/${m.id}/read`,{method:'PATCH',headers:this.headers()}); }catch(e){}
+    });
+    t.unread=0;
+    this.updateBadge();
+
+    const initials = t.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    const main = document.getElementById('msg-main');
+    main.innerHTML = `
+      <div class="msg-main-head">
+        <div class="msg-main-av">${initials}</div>
+        <div>
+          <div class="msg-main-name">${t.name||t.phone}</div>
+          <div class="msg-main-sub">${t.phone} · <span class="msg-platform ${t.platform}" style="vertical-align:middle">${t.platform==='imessage'?'iMessage':t.platform==='whatsapp'?'WhatsApp':t.platform}</span></div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn sml" onclick="MSG.bookFromThread('${phone}')">+ Book</button>
+          <button class="btn sml ghost" onclick="MSG.callCustomer('${phone}')">📞 Call</button>
+        </div>
+      </div>
+      <div class="msg-body" id="msg-body">
+        ${t.msgs.map(m=>{
+          const isOut = m.type==='outbound';
+          const time = new Date(m.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+          const label = isOut ? '✨' : initials;
+          return `<div class="msg-bubble-row ${isOut?'out':'in'}">
+            <div class="msg-bav" style="background:${isOut?'var(--pink)':'var(--pink3)'};color:${isOut?'#fff':'var(--pink)'}">${label}</div>
+            <div>
+              <div class="msg-bubble">${m.body?.replace(/\n/g,'<br>')||''}</div>
+              <div class="msg-bubble-time">${time}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="msg-input-row">
+        <textarea class="msg-inp" id="msg-reply-inp" placeholder="Reply to ${t.name||t.phone}…" rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();MSG.sendReply()}"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,90)+'px'"></textarea>
+        <button class="msg-send" onclick="MSG.sendReply()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+      </div>
+    `;
+    // Quick reply chips
+    const chips = ['How can I help?','See our prices here 🌸','When would you like to book?','Payment: Cash, E-transfer or Card ✨'];
+    const chipsRow = document.createElement('div');
+    chipsRow.style.cssText='display:flex;gap:6px;overflow-x:auto;padding:8px 14px;border-top:1px solid var(--bdr);scrollbar-width:none;flex-shrink:0';
+    chipsRow.innerHTML = chips.map(c=>`<button class="ai-chip" style="font-size:11px" onclick="document.getElementById('msg-reply-inp').value='${c}';document.getElementById('msg-reply-inp').focus()">${c}</button>`).join('');
+    main.insertBefore(chipsRow, main.querySelector('.msg-input-row'));
+
+    // Scroll to bottom
+    setTimeout(()=>{ const b=document.getElementById('msg-body'); if(b) b.scrollTop=b.scrollHeight; },50);
+  },
+
+  async sendReply(){
+    const inp = document.getElementById('msg-reply-inp');
+    const body = (inp?.value||'').trim();
+    if(!body || !this.activePhone) return;
+    inp.value=''; inp.style.height='auto';
+
+    const t = this.threads[this.activePhone];
+    try{
+      await fetch(`${this.bridgeUrl}/api/reply`,{
+        method:'POST',
+        headers:this.headers(),
+        body:JSON.stringify({ to: this.activePhone, body, platform: t?.platform||'whatsapp' })
+      });
+      // Add to thread immediately (optimistic)
+      const msg = { id:'local-'+Date.now(), type:'outbound', to:this.activePhone, body, ts:Date.now(), platform:t?.platform||'whatsapp' };
+      if(t) t.msgs.push(msg);
+      this.openThread(this.activePhone);
+      showNotif('✅ Message sent to '+( t?.name||this.activePhone ));
+    } catch(e){
+      showNotif('⚠️ Could not send — bridge offline?');
+    }
+  },
+
+  bookFromThread(phone){
+    const t = this.threads[phone];
+    if(t) document.getElementById('nb-name').value = t.name||'';
+    document.getElementById('nb-phone').value = phone;
+    closeModal('openclaw-setup-modal');
+    openModal('new-booking-modal');
+  },
+
+  callCustomer(phone){
+    window.open('tel:'+phone);
+  },
+
+  updateBadge(count){
+    const n = count !== undefined ? count : Object.values(this.threads).reduce((s,t)=>s+t.unread,0);
+    const badge = document.getElementById('nb-messages');
+    if(badge){ badge.textContent = n; badge.style.display = n > 0 ? 'inline' : 'none'; }
+  },
+
+  startPolling(){
+    if(this.pollInterval) clearInterval(this.pollInterval);
+    this.fetchMessages();
+    this.fetchPendingBookings();
+    this.pollInterval = setInterval(()=>{
+      this.fetchMessages();
+      this.fetchPendingBookings();
+    }, 8000); // poll every 8 seconds
+  },
+
+  stopPolling(){
+    if(this.pollInterval){ clearInterval(this.pollInterval); this.pollInterval=null; }
+  },
+};
+
+function setBridgeStatus(connected, msg){
+  const dot = document.getElementById('bridge-dot');
+  const txt = document.getElementById('bridge-status-txt');
+  if(dot){ dot.className='bridge-dot'+(connected?' live':' checking'); }
+  if(txt) txt.textContent = msg;
+}
+
+function renderPendingBookings(bookings){
+  const el = document.getElementById('pending-bookings-bar');
+  if(!el) return;
+  if(!bookings.length){ el.innerHTML=''; return; }
+  el.innerHTML = bookings.map(b=>`
+    <div class="booking-alert">
+      <div class="booking-alert-ico">📅</div>
+      <div class="booking-alert-body">
+        <div class="booking-alert-title">Booking Request — ${b.name||b.from}</div>
+        <div class="booking-alert-meta">${b.service||'Service TBD'} · ${b.date||'Date TBD'} · ${b.platform}</div>
+        <div style="margin-top:6px;font-size:12px;color:var(--tx3);font-style:italic">"${(b.raw||'').substring(0,80)}"</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button class="btn sml pri" onclick="confirmBookingFromMsg('${b.id}','${b.name||b.from}','${b.from}')">Confirm</button>
+        <button class="btn sml" onclick="this.closest('.booking-alert').remove()">Dismiss</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderEmptyThread(){
+  document.getElementById('msg-main').innerHTML=`<div class="msg-empty"><div class="msg-empty-ico">🌸</div><div style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--tx2)">Select a conversation</div><div style="font-size:12px">Customer messages appear here in real time</div></div>`;
+}
+
+async function confirmBookingFromMsg(id, name, phone){
+  try{
+    await fetch(`${MSG.bridgeUrl}/api/bookings/${id}/confirm`,{ method:'POST', headers:MSG.headers() });
+    document.getElementById('nb-name').value = name;
+    document.getElementById('nb-phone').value = phone;
+    openModal('new-booking-modal');
+    MSG.fetchPendingBookings();
+    showNotif('✅ Opening booking form for '+name);
+  } catch(e){ showNotif('⚠️ Could not confirm — bridge offline?'); }
+}
+
+function refreshMessages(){
+  MSG.fetchMessages();
+  MSG.fetchPendingBookings();
+  showNotif('🔄 Refreshing messages…');
+}
+
+function saveBridgeSettings(){
+  const url = document.getElementById('oc-bridge-url').value.trim() || 'http://localhost:3099';
+  const key = document.getElementById('oc-api-key').value.trim() || 'shineos-local';
+  MSG.bridgeUrl = url;
+  MSG.apiKey    = key;
+  localStorage.setItem('shine-bridge-url', url);
+  localStorage.setItem('shine-bridge-key', key);
+  closeModal('openclaw-setup-modal');
+  MSG.startPolling();
+  showNotif('✅ Bridge settings saved — connecting…');
+}
+
+async function testBridgeConnection(){
+  const url = document.getElementById('oc-bridge-url').value.trim() || 'http://localhost:3099';
+  const key = document.getElementById('oc-api-key').value.trim() || 'shineos-local';
+  try{
+    const r = await fetch(`${url}/health`, { signal: AbortSignal.timeout(4000) });
+    if(r.ok){ showNotif('✅ Bridge server is running!'); }
+    else { showNotif('⚠️ Bridge responded with error '+r.status); }
+  } catch(e){
+    showNotif('❌ Cannot reach bridge — is the server running?');
+  }
+}
+
+// Safely set bridge settings fields (modal may not exist if messages page not visited yet)
+function loadBridgeSettingsUI(){
+  const urlEl = document.getElementById('oc-bridge-url');
+  const keyEl = document.getElementById('oc-api-key');
+  if(urlEl) urlEl.value = MSG.bridgeUrl;
+  if(keyEl) keyEl.value = MSG.apiKey;
+}
+loadBridgeSettingsUI();
+
+// Initial quiet check on load (no alerts if offline)
+setTimeout(()=> MSG.fetchMessages().then(ok => { if(ok) MSG.fetchPendingBookings(); }), 2000);
+
+// ═══════════ FLOATING BUBBLES ═══════════
+(function spawnBubbles(){
+  const bg = document.getElementById('bubble-bg');
+  if(!bg) return;
+  const sizes = [14,20,28,36,46,60,80,100];
+  const speeds = [12,16,20,24,28];
+
+  function makeBubble(){
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    const sz = sizes[Math.floor(Math.random()*sizes.length)];
+    const spd = speeds[Math.floor(Math.random()*speeds.length)] + Math.random()*8;
+    const left = 10 + Math.random()*80;
+    const delay = Math.random()*spd;
+    b.style.cssText = `width:${sz}px;height:${sz}px;left:${left}%;bottom:-${sz+10}px;animation-duration:${spd}s;animation-delay:-${delay}s`;
+    bg.appendChild(b);
+    // Remove after two cycles to avoid DOM bloat
+    setTimeout(()=>b.remove(), (spd+delay)*1000*2);
+  }
+
+  // Initial batch
+  for(let i=0;i<18;i++) makeBubble();
+  // Keep spawning
+  setInterval(makeBubble, 1800);
+})();
+
+</script>
+</body>
+</html>
